@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="{{g.site_url}}{{ h.url_for('news_feed') }}" rel="self" type="application/rss+xml" />
+    <title>{{g.site_title}} - {{_('News')}}</title>
+    <link>{{g.site_url}}{{ h.url_for('news') }}</link>
+    <description>{{ g.site_description or g.site_title}}</description>
+    {% for post in c.posts %}
+    <item>
+      <title>{{ post.title }}</title>
+      <link>{{g.site_url}}{{ h.url_for('news_post', title=post.url)}}</link>
+      <guid>{{g.site_url}}{{ h.url_for('news_post', title=post.url)}}</guid>
+      <pubDate>{{h.render_datetime(post.created, '%a, %d %b %Y %H:%M:%S GMT', True)}}</pubDate>
+      <description><![CDATA[{{ h.render_markdown(post.content) }}]]></description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

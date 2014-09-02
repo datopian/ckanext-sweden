@@ -1,0 +1,19 @@
+{% ckan_extends %}
+
+{% block header_account_logged %}
+  {% if h.check_access('blog_admin') %}
+    <li>
+      <a href="{{ h.url_for('blog_admin') }}" title="{{ _('Blog admin') }}">
+        <i class="icon-file"></i>
+      </a>
+    </li>
+  {% endif %}
+  {{ super() }}
+{% endblock %}
+
+{% block header_site_navigation_tabs %}
+  {{ h.build_nav_main(
+    ('news', _('News'))
+  ) }}
+  {{ super() }}
+{% endblock %}

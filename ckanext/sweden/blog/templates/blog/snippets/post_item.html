@@ -1,0 +1,35 @@
+{#
+Displays a single blog post.
+
+post           - A post to display.
+item_class     - The class name to use on the list item.
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 80).
+
+Example:
+
+  {% snippet 'blog/snippets/post_item.html', post=c.posts[0] %}
+
+#}
+{% set truncate = truncate or 180 %}
+{% set truncate_title = truncate_title or 80 %}
+{% set title = post.title %}
+{% set notes = h.markdown_extract(post.content, extract_length=truncate) %}
+
+<li class="{{ item_class or "dataset-item" }}">
+  {% block post_item_content %}
+    <div class="dataset-content">
+      <header>
+        <h3 class="dataset-heading">
+          {{ h.link_to(h.truncate(title, truncate_title), h.url_for('news_post', title=post.url)) }}
+        </h3>
+        <p class="blog-post-meta"><i class="icon-time"></i> <time datetime="{{h.render_datetime(post.created, '%Y-%m-%dT%H:%M:%S', True)}}">{{h.render_datetime(post.created)}}</time></p>
+      </header>
+      {% if notes %}
+        <div>{{ notes|urlize }} <a href="{{h.url_for('news_post', title=post.url)}}" title="{{_('Show full blog post')}}">{{_('Read more')}}</a></div>
+      {% else %}
+        <p class="empty">{{ _("This post has no content") }}</p>
+      {% endif %}
+    </div>
+  {% endblock %}
+</li>

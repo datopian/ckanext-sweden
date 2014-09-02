@@ -26,5 +26,9 @@ setup(
         [ckan.plugins]
         # Add plugins here, e.g.
         # myplugin=ckanext.sweden.plugin:PluginClass
+        sweden_blog=ckanext.sweden.blog.plugin:BlogPlugin
+
+        [paste.paster_command]
+        sweden_blog_init = ckanext.sweden.blog.commands.blog_init:InitDB
     ''',
 )

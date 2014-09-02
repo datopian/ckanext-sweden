@@ -1,0 +1,61 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Blog admin') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{_('Blog admin')}}</li>
+{% endblock %}
+
+{% block primary_content %}
+    {% resource 'blog/blog-admin.js' %}
+    <header class="module-content page-header">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#"><i class="icon-list"></i> {{_('All')}}</a>
+        </li>
+        <li>
+          <a href="{{ h.url_for('blog_admin') }}"><i class="icon-file"></i> {{_('Create')}}</a>
+        </li>
+      </ul>
+    </header>
+    <div class="module-content">
+      <h1 class="page-heading">{{ _('Blog admin') }}</h1>
+    </div>
+    <div class="module-content">
+      <h2>{{_('All')}} {{_('posts')}}</h2>
+    </div>
+    <div>
+      <table id="posts-list" class="table">
+        <thead>
+          <tr>
+            <th>{{_('Title')}}</th>
+            <th>{{_('Excerpt')}}</th>
+            <th>{{_('Created')}}</th>
+            <th>{{_('Actions')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in c.posts %}
+          <tr>
+            <td><a href="{{h.url_for('news_post', title=post.url)}}">{{post.title}}</a></td>
+            <td>{{h.markdown_extract(post.content, extract_length=100)}}</td>
+            <td>{{h.render_datetime(post.created, '%Y-%m-%d %H:%M', True)}}</td>
+            <td>
+              <a href="{{h.url_for('blog_admin_edit', title=post.url)}}"><i class="icon-edit"></i></a>
+              {% set locale = h.dump_json({'content': _('Are you sure you want to delete this post?'), 'heading': _('Please Confirm Action'), 'confirm': _('Confirm')}) %}
+              <a href="{{h.url_for('blog_admin_remove', title=post.url)}}" title="{{_('Remove')}} {{_('post')}}" data-module="confirm-action" data-module-i18n="{{ locale }}"><i class="icon-remove"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+{% block secondary_content %}
+  <div class="module">
+    <div class="module-content">
+      &nbsp;
+    </div>
+  </div>
+{% endblock %}

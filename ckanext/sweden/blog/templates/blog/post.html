@@ -1,0 +1,48 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ c.post.title }} - {{ _('News') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li><a href="{% url_for 'news' %}">{{_('News')}}</a></li>
+  <li class="active">{{c.post.title}}</li>
+{% endblock %}
+
+{% block add_action %}
+  {% if h.check_access('blog_admin') %}
+    <div class="add_action">
+      <a class="btn btn-primary" href="{{h.url_for('blog_admin_edit', title=c.post.url)}}"><i class="icon-edit"></i> Edit</a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      <header class="blog-post-header">
+        <h1 class="page-heading">{{ c.post.title }}</h1>
+        <p class="blog-post-meta"><i class="icon-user"></i> {{ c.post_author.fullname }} <i class="icon-time"></i> <time datetime="{{h.render_datetime(c.post.created, '%Y-%m-%dT%H:%M:%S', True)}}">{{h.render_datetime(c.post.created)}}</time>
+      </header>
+      {{ c.content_markdown|safe }}
+    </div>
+  </article>
+
+  <section class="module">
+    <div class="module-content" id="disqus_thread"></div>
+  </section>
+  <script type="text/javascript">
+      /* * * CONFIGURATION VARIABLES: THIS CODE IS ONLY AN EXAMPLE * * */
+      var disqus_shortname = 'oppnadata'; // Required - Replace example with your forum shortname
+      // var disqus_identifier = 'a unique identifier for each page where Disqus is present';
+      // var disqus_title = 'a unique title for each page where Disqus is present';
+      var disqus_url = '{{ h.full_current_url() }}';
+
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+{% endblock %}
+
+{% block secondary %}{% endblock %}

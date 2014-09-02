@@ -1,0 +1,21 @@
+{#
+Displays a list of posts.
+
+posts          - A list of posts to display.
+list_class     - The class name for the list item.
+item_class     - The class name to use on each item.
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 80).
+
+Example:
+
+  {% snippet 'blog/snippets/post_list.html', posts=c.posts %}
+
+#}
+{% if posts %}
+  <ul class="{{ list_class or 'dataset-list unstyled' }}">
+    {% for post in posts %}
+      {% snippet 'blog/snippets/post_item.html', post=post, item_class=item_class, truncate=truncate, truncate_title=truncate_title %}
+    {% endfor %}
+  </ul>
+{% endif %}

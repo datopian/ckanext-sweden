@@ -1,0 +1,23 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('News') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{_('News')}}</li>
+{% endblock %}
+
+{% block add_action_content %}
+  <a class="btn" href="{{ h.url_for('news_feed') }}"><i class="icon-rss"></i> {{_('Feed')}}</a>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      <h1 class="page-heading">{{ _('News') }}</h1>
+      <hr>
+      {% snippet 'blog/snippets/post_list.html', posts=c.posts %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
