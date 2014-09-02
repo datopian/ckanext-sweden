@@ -1,4 +1,3 @@
-import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
 
@@ -32,7 +31,7 @@ def blog_admin(context, data_dict=None):
                        'group to administrate the blog.'}
 
     # Finally, we can test whether the user is a member of the blogadmins group.
-    if username and user_id in member_ids:
+    if user_name and user_id in member_ids:
         return {'success': True}
     else:
         return {'success': False,

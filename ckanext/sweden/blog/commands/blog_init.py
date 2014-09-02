@@ -1,15 +1,9 @@
-import collections
 import logging
-import datetime
-import os
-import re
-import time
-import sys
 
-from pylons import config
 from ckan.lib.cli import CkanCommand
 # No other CKAN imports allowed until _load_config is run,
 # or logging is disabled
+
 
 class InitDB(CkanCommand):
     """
