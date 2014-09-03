@@ -217,7 +217,7 @@ class TestBlog(FunctionalTestBaseClass):
         links = soup('a', href='/blog/admin/remove/' + slug)
         assert len(links) == 1
         link = links[0]
-        url = link['href']
+        url = str(link['href'])
 
         # Click on the delete link.
         response = self.app.post(url, extra_environ=extra_environ)
