@@ -13,6 +13,6 @@ To enable:
 
 2. Run the paster command to initialize the blog's database tables:
 
-       paster --plugin=ckan sweden_blog_init -c /etc/ckan/default/development.ini
+        paster --plugin=ckan sweden_blog_init -c /etc/ckan/default/development.ini
 
 3. Restart CKAN.
