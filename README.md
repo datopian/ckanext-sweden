@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ckan/ckanext-sweden.png)](https://travis-ci.org/ckan/ckanext-sweden)
+
 ckanext-sweden
 ==============
 
@@ -29,6 +31,7 @@ To run the tests:
 
     nosetests --nologcapture --with-pylons=test.ini
 
-To run the tests with coverage:
+To run the tests with coverage, first install coverage (`pip install coverage`)
+then do:
 
     nosetests --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.sweden --cover-inclusive --cover-erase --cover-tests
