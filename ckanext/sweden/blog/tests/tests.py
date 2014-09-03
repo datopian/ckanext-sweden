@@ -187,6 +187,21 @@ class TestBlog(FunctionalTestBaseClass):
             assert soup('title')[0].text.startswith('Test blog post')
             assert 'Testing...' in soup.text
 
+    def test_create_two_blog_posts_with_the_same_title(self):
+        '''Creating two posts with the same title should return an error.'''
+        sysadmin = custom_factories.Sysadmin()
+        extra_environ = {'REMOTE_USER': str(sysadmin['name'])}
+        self._create_blog_post(title="Foobar", extra_environ=extra_environ)
+
+        url = toolkit.url_for('blog_admin')
+        response = self.app.get(url, extra_environ=extra_environ)
+        form = response.forms[1]
+        form['title'] = "Foobar"
+        form['content'] = "... content ..."
+        response = form.submit(extra_environ=extra_environ)
+        soup = response.html
+        assert "There's already a post with that title" in soup.text
+
     def test_delete_blog_post(self):
         '''Create a new blog post then delete it.'''
         sysadmin = custom_factories.Sysadmin()

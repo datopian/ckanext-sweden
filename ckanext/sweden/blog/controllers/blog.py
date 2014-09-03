@@ -13,12 +13,19 @@ class ValidationError(Exception):
     pass
 
 
-def _validate_blog_post(data_dict):
+def _validate_blog_post(data_dict, original_title=None):
 
     title = data_dict.get('title').strip()
     if not title:
         raise ValidationError(toolkit._("You must enter a title"))
-    # TODO: Raise error for duplicate titles.
+
+    from ckanext.sweden.blog.model.post import Post
+    q = model.Session.query(Post).filter_by(title=title)
+    if original_title:
+        q = q.filter(Post.url != original_title)
+    if q.all():
+        raise ValidationError(toolkit._(
+            "There's already a post with that title"))
 
     content = data_dict.get('content', '')
 
@@ -126,7 +133,6 @@ class BlogController(BaseController):
                               extra_vars={'data_dict': {}, 'error': ''})
 
     def admin_edit(self, title):
-
         data_dict = dict(request.POST)
 
         # Redirect to /news if not authorized:
@@ -152,7 +158,8 @@ class BlogController(BaseController):
         if request.method == 'POST':
 
             try:
-                title, content = _validate_blog_post(request.POST)
+                title, content = _validate_blog_post(
+                    request.POST, original_title=request.urlvars.get('title'))
             except ValidationError as err:
                 return toolkit.render(
                     'blog/admin_edit.html',
