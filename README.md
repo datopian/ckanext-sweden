@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ckan/ckanext-sweden.png)](https://travis-ci.org/ckan/ckanext-sweden)
+[![Build Status](https://travis-ci.org/okfn/ckanext-sweden.png)](https://travis-ci.org/okfn/ckanext-sweden)
 
 ckanext-sweden
 ==============
