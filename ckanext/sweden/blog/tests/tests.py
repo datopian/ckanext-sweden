@@ -131,8 +131,8 @@ class TestBlog(FunctionalTestBaseClass):
 
         for title in ('', '   '):
             response = self._create_blog_post(title=title,
-                                            content='This is my blog post',
-                                            extra_environ=extra_environ)
+                                              content='This is my blog post',
+                                              extra_environ=extra_environ)
 
             soup = response.html
             assert "You must enter a title" in soup.text
