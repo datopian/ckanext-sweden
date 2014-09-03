@@ -9,6 +9,22 @@ from sqlalchemy.orm.exc import NoResultFound
 log = logging.getLogger(__name__)
 
 
+class ValidationError(Exception):
+    pass
+
+
+def _validate_blog_post(data_dict):
+
+    title = data_dict.get('title').strip()
+    if not title:
+        raise ValidationError(toolkit._("You must enter a title"))
+    # TODO: Raise error for duplicate titles.
+
+    content = data_dict.get('content', '')
+
+    return title, content
+
+
 class BlogController(BaseController):
 
     def index(self):
@@ -87,9 +103,18 @@ class BlogController(BaseController):
         c.title = ''
         c.content = ''
         if request.method == 'POST':
+
+            try:
+                title, content = _validate_blog_post(request.POST)
+            except ValidationError as err:
+                return toolkit.render('blog/admin.html',
+                                      extra_vars={'data_dict': request.POST,
+                                                  'error': err.args})
+
+            # We assume nothing will go wrong here, since the data has been
+            # validated.
             from ckanext.sweden.blog.model.post import Post
-            newPost = Post(request.POST['title'], request.POST['content'],
-                           c.userobj.id)
+            newPost = Post(title, content, c.userobj.id)
             model.Session.add(newPost)
             model.Session.commit()
             flash_notice("Your blog post has been saved!")
@@ -97,9 +122,13 @@ class BlogController(BaseController):
             controller = 'ckanext.sweden.blog.controllers.blog:BlogController'
             h.redirect_to(controller=controller, action='admin_index')
 
-        return toolkit.render('blog/admin.html')
+        return toolkit.render('blog/admin.html',
+                              extra_vars={'data_dict': {}, 'error': ''})
 
     def admin_edit(self, title):
+
+        data_dict = dict(request.POST)
+
         # Redirect to /news if not authorized:
         try:
             context = {'user': c.user}
@@ -113,12 +142,24 @@ class BlogController(BaseController):
                 filter(Post.url == title).\
                 filter(Post.visible == True).\
                 one()
+            if 'title' not in data_dict:
+                data_dict['title'] = c.post.title
+            if 'content' not in data_dict:
+                data_dict['content'] = c.post.content
         except NoResultFound:
             abort(404)
 
         if request.method == 'POST':
-            c.post.title = request.POST['title']
-            c.post.content = request.POST['content']
+
+            try:
+                title, content = _validate_blog_post(request.POST)
+            except ValidationError as err:
+                return toolkit.render(
+                    'blog/admin_edit.html',
+                    extra_vars={'data_dict': data_dict, 'error': err.args})
+
+            c.post.title = title
+            c.post.content = content
             model.Session.commit()
 
             flash_notice("Your blog post has been updated!")
@@ -126,7 +167,9 @@ class BlogController(BaseController):
             controller = 'ckanext.sweden.blog.controllers.blog:BlogController'
             h.redirect_to(controller=controller, action='admin_index')
 
-        return toolkit.render('blog/admin_edit.html')
+        return toolkit.render(
+            'blog/admin_edit.html',
+            extra_vars={'data_dict': data_dict, 'errors': ''})
 
     def feed(self):
         from ckanext.sweden.blog.model.post import Post

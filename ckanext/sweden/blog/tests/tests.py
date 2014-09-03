@@ -124,6 +124,20 @@ class TestBlog(FunctionalTestBaseClass):
         assert soup('title')[0].text.startswith('Test blog post')
         assert 'Testing...' in soup.text
 
+    def test_create_blog_post_with_no_title(self):
+        '''Creating a blog post with no title should return an error.'''
+        sysadmin = custom_factories.Sysadmin()
+        extra_environ = {'REMOTE_USER': str(sysadmin['name'])}
+
+        for title in ('', '   '):
+            response = self._create_blog_post(title=title,
+                                            content='This is my blog post',
+                                            extra_environ=extra_environ)
+
+            soup = response.html
+            assert "You must enter a title" in soup.text
+            assert "This is my blog post" in soup.text
+
     def test_edit_blog_post(self):
         '''Create a new blog post, edit it, and visit its page.'''
         sysadmin = custom_factories.Sysadmin()
@@ -145,6 +159,33 @@ class TestBlog(FunctionalTestBaseClass):
         soup = response.html
         assert soup('title')[0].text.startswith('Updated title')
         assert 'Updated content' in soup.text
+
+    def test_edit_blog_with_no_title(self):
+        '''Updating a blog post with no title should return an error.'''
+        sysadmin = custom_factories.Sysadmin()
+        extra_environ = {'REMOTE_USER': str(sysadmin['name'])}
+        self._create_blog_post(extra_environ=extra_environ)
+
+        for new_title in ('', '   '):
+
+            # Edit the blog post we just created.
+            url = toolkit.url_for('blog_admin_edit', title='test-blog-post')
+            response = self.app.get(url, extra_environ=extra_environ)
+            form = response.forms[1]
+            form['title'] = new_title
+            form['content'] = 'Updated content'
+            response = form.submit(extra_environ=extra_environ)
+            soup = response.html
+            assert "You must enter a title" in soup.text
+            assert "Updated content" in soup.text
+
+            # Checl that the post has not been updated.
+            url = toolkit.url_for('news_post', title='test-blog-post')
+            response = self.app.get(url, extra_environ=extra_environ)
+            assert response.status_int == 200
+            soup = response.html
+            assert soup('title')[0].text.startswith('Test blog post')
+            assert 'Testing...' in soup.text
 
     def test_delete_blog_post(self):
         '''Create a new blog post then delete it.'''
