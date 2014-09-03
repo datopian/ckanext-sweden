@@ -27,7 +27,11 @@ To enable, activate your CKAN virtual environment and then:
 Tests
 -----
 
-To run the tests:
+To run the tests, first install the dev requirements:
+
+    pip install -r dev-requirements.txt
+
+Then do:
 
     nosetests --nologcapture --with-pylons=test.ini
 
