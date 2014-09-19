@@ -96,7 +96,6 @@ class DCATAPParser(RDFParser):
             for key, predicate in (
                     ('dcat_issued', DCT.issued),
                     ('dcat_modified', DCT.modified),
-                    ('guid', DCT.identifier),  # backwards compatibility
                     ('dcat_identifier', DCT.identifier),
                     ('dcat_alternate_identifier', ADMS.identifier),
                     ('dcat_version', ADMS.version),
