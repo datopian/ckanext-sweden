@@ -118,7 +118,8 @@ class DCATAPParser(RDFParser):
                     ):
                 values = self._object_list(dataset, predicate)
                 if values:
-                    ckan_dict['extras'].append({'key': key, 'value': values})
+                    ckan_dict['extras'].append({'key': key,
+                                                'value': json.dumps(values)})
 
             # Dataset URI (explicitly show the missing ones)
             dataset_uri = (unicode(dataset)
