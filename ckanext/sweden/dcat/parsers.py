@@ -1,7 +1,8 @@
 # DCAT parsers, Work in progress
 
 # Dev stuff, will probably get removed
-import fileinput
+import sys
+import argparse
 
 import json
 
@@ -170,11 +171,23 @@ class DCATAPParser(RDFParser):
 
 if __name__ == '__main__':
 
-    contents = ''
-    for line in fileinput.input():
-        contents += line
+    parser = argparse.ArgumentParser(
+        description='Parse DCAT RDF graphs to CKAN dataset JSON objects')
+    parser.add_argument('file', nargs='?', type=argparse.FileType('r'),
+                        default=sys.stdin)
+    parser.add_argument('-f', '--format',
+                        help='''Serialization format (as understood by rdflib)
+                                eg: xml, n3 ...'). Defaults to \'xml\'.''')
+    parser.add_argument('-p', '--pretty',
+                        action='store_true',
+                        help='Make the output more human readable')
+
+    args = parser.parse_args()
+
+    contents = args.file.read()
 
     parser = DCATAPParser()
-    ckan_datasets = parser.parse(contents)
+    ckan_datasets = parser.parse(contents, _format=args.format)
 
-    print json.dumps(ckan_datasets)
+    indent = 4 if args.pretty else None
+    print json.dumps(ckan_datasets, indent=indent)
