@@ -1,0 +1,10 @@
+{
+  "name": "ckanext-sweden-theme",
+  "version": "0.0.0",
+  "private": true,
+  "license": "proprietary",
+  "dependencies": {
+    "open-sans-fontface": "1.1.x",
+    "bootstrap": "2.3.x"
+  }
+}

@@ -51,3 +51,6 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Front end deps
+node_modules
+bower_components

@@ -39,3 +39,25 @@ To run the tests with coverage, first install coverage (`pip install coverage`)
 then do:
 
     nosetests --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.sweden --cover-inclusive --cover-erase --cover-tests
+
+
+Theme
+-----
+
+To enable the theme:
+
+1. Add `sweden_theme` to `ckan.plugins`
+
+To modify the theme of the ckanext-sweden theme you'll need to:
+
+1. Install [Node](http://nodejs.org/) (`apt-get install node`) and
+   [Bower](http://bower.io/) (`npm install -g bower`)
+
+2. Install the front end dependancies:
+        cd ./ckanext/sweden/theme/ && npm i && bower update
+
+3. Re-compile assets: `gulp` (`gulp watch` will regenerate them on the whenever
+   a change happens.)
+
+4. Once you've made your changes make sure you commit the changes in
+   `./ckanext/theme/resources`
