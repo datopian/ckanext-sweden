@@ -24,25 +24,46 @@ class RDFParser(object):
 
     def _datasets(self):
         '''
-        Returns all DCAT datasets on the graph
+        Generator that returns all DCAT datasets on the graph
+
+        Yields rdflib.term.URIRef objects that can be used on graph lookups
+        and queries
         '''
         for dataset in self.g.subjects(RDF.type, DCAT.Dataset):
             yield dataset
 
     def _distributions(self, dataset):
+        '''
+        Generator that returns all DCAT distributions on a particular dataset
 
+        Yields rdflib.term.URIRef objects that can be used on graph lookups
+        and queries
+        '''
         for distribution in self.g.objects(dataset, DCAT.distribution):
             yield distribution
 
-    def _object(self, subject, predicate):
+    def _object_value(self, subject, predicate):
+        '''
+        Given a subject and a predicate, returns the value of the object
 
+        Both subject and predicate must be rdflib.term.URIRef objects
+
+        If found, the unicode representation is returned, else None
+        '''
         for o in self.g.objects(subject, predicate):
             return unicode(o)
         return None
 
-    def _object_int(self, subject, predicate):
+    def _object_value_int(self, subject, predicate):
+        '''
+        Given a subject and a predicate, returns the value of the object as an
+        integer
 
-        object_value = self._object(subject, predicate)
+        Both subject and predicate must be rdflib.term.URIRef objects
+
+        If the value can not be parsed as intger, returns None
+        '''
+        object_value = self._object_value(subject, predicate)
         if object_value:
             try:
                 return int(object_value)
@@ -50,11 +71,30 @@ class RDFParser(object):
                 pass
         return None
 
-    def _object_list(self, subject, predicate):
+    def _object_value_list(self, subject, predicate):
+        '''
+        Given a subject and a predicate, returns a list with all the values of
+        the objects
 
+        Both subject and predicate must be rdflib.term.URIRef objects
+
+        If no values found, returns an empty string
+        '''
         return [unicode(o) for o in self.g.objects(subject, predicate)]
 
     def parse(self, contents, _format=None):
+        '''
+        Parses and RDF graph serialization and returns CKAN dataset dicts
+
+        Contents are a string with the serialized RDF graph (eg RDF/XML, N3
+        ... ). By default RF/XML is expected. The optional parameter _format
+        can be used to tell rdflib otherwise.
+
+        Different profiles should implement this method and return a list of
+        CKAN dataset dicts (something that can be passed to `package_create`
+        or `package_update`).
+
+        '''
 
         raise NotImplemented
 
@@ -68,7 +108,6 @@ class DCATAPParser(RDFParser):
         ckan_datasets = []
 
         for dataset in self._datasets():
-
             ckan_dict = {
                 'tags': [],
                 'extras': [],
@@ -81,13 +120,13 @@ class DCATAPParser(RDFParser):
                     ('notes', DCT.description),
                     ('url', DCAT.landingUrl),
                     ):
-                value = self._object(dataset, predicate)
+                value = self._object_value(dataset, predicate)
                 if value:
                     ckan_dict[key] = value
 
             # Tags
 
-            keywords = self._object_list(dataset, DCAT.keyword) or []
+            keywords = self._object_value_list(dataset, DCAT.keyword) or []
             for keyword in keywords:
                 ckan_dict['tags'].append({'name': keyword})
 
@@ -106,7 +145,7 @@ class DCATAPParser(RDFParser):
                     ('dcat_temporal', DCT.temporal),
 
                     ):
-                value = self._object(dataset, predicate)
+                value = self._object_value(dataset, predicate)
                 if value:
                     ckan_dict['extras'].append({'key': key, 'value': value})
 
@@ -116,7 +155,7 @@ class DCATAPParser(RDFParser):
                     ('dcat_theme', DCAT.theme),
                     ('dcat_conforms_to', DCAT.conformsTo),
                     ):
-                values = self._object_list(dataset, predicate)
+                values = self._object_value_list(dataset, predicate)
                 if values:
                     ckan_dict['extras'].append({'key': key,
                                                 'value': json.dumps(values)})
@@ -145,14 +184,14 @@ class DCATAPParser(RDFParser):
                         ('dcat_rights', DCT.rights),
                         ('dcat_licence', DCT.license),
                         ):
-                    value = self._object(distribution, predicate)
+                    value = self._object_value(distribution, predicate)
                     if value:
                         resource_dict[key] = value
 
-                resource_dict['url'] = (self._object(distribution, DCAT.accessURL) or
-                                        self._object(distribution, DCAT.downloadURL))
+                resource_dict['url'] = (self._object_value(distribution, DCAT.accessURL) or
+                                        self._object_value(distribution, DCAT.downloadURL))
 
-                size = self._object_int(distribution, DCAT.byteSize)
+                size = self._object_value_int(distribution, DCAT.byteSize)
                 if size is not None:
                         resource_dict['size'] = size
 
