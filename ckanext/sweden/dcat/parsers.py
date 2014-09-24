@@ -182,7 +182,7 @@ class DCATAPParser(RDFParser):
                         ('dcat_modified', DCT.modified),
                         ('dcat_status', ADMS.status),
                         ('dcat_rights', DCT.rights),
-                        ('dcat_licence', DCT.license),
+                        ('dcat_license', DCT.license),
                         ):
                     value = self._object_value(distribution, predicate)
                     if value:
