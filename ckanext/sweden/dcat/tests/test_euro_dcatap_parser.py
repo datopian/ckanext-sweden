@@ -63,9 +63,9 @@ class TestEuroEuroDCATAPParser(object):
         eq_(_get_extra_value('dcat_version'), u'2.3')
         eq_(_get_extra_value('dcat_version_notes'), u'New schema added')
 
-        #eq_(_get_extra_value('dcat_frequency'), '')
-        #eq_(_get_extra_value('dcat_spatial'), '')
-        #eq_(_get_extra_value('dcat_temporal'), '')
+        # eq_(_get_extra_value('dcat_frequency'), '')
+        # eq_(_get_extra_value('dcat_spatial'), '')
+        # eq_(_get_extra_value('dcat_temporal'), '')
 
         #  Lists
         eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])
@@ -86,8 +86,8 @@ class TestEuroEuroDCATAPParser(object):
         eq_(resource['name'], u'Some website')
         eq_(resource['description'], u'A longer description')
 
-#        eq_(resource['format'], u'')
-#        eq_(resource['mimetype'], u'')
+        # eq_(resource['format'], u'')
+        # eq_(resource['mimetype'], u'')
         eq_(resource['dcat_issued'], u'2012-05-11')
         eq_(resource['dcat_modified'], u'2012-05-01T00:04:06')
         eq_(resource['dcat_status'], u'http://purl.org/adms/status/Completed')
@@ -187,3 +187,23 @@ class TestEuroEuroDCATAPParser(object):
         eq_(dataset['title'], 'Example dataset 1')
         eq_(len(dataset['resources']), 3)
         eq_(len(dataset['tags']), 2)
+
+    def test_dataset_turtle_1(self):
+
+        contents = self._get_file_contents('dataset_deri.ttl')
+
+        p = EuroDCATAPParser()
+
+        datasets = p.parse(contents, _format='n3')
+
+        eq_(len(datasets), 1)
+
+        dataset = datasets[0]
+
+        eq_(dataset['title'], 'Abandoned Vehicles')
+        eq_(len(dataset['resources']), 1)
+
+        resource = dataset['resources'][0]
+        eq_(resource['name'], u'CSV distribution of: Abandoned Vehicles')
+        eq_(resource['url'], u'http://data.london.gov.uk/datafiles/environment/abandoned-vehicles-borough.csv')
+        eq_(resource['uri'], u'http://data.london.gov.uk/dataset/Abandoned_Vehicles/csv')
