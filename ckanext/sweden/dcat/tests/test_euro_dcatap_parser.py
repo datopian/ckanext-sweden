@@ -1,0 +1,189 @@
+import os
+import json
+
+import nose
+
+from rdflib import Graph, URIRef, Literal
+from rdflib.namespace import Namespace, RDF
+
+from ckanext.sweden.dcat.parsers import EuroDCATAPParser
+
+eq_ = nose.tools.eq_
+
+DCAT = Namespace("http://www.w3.org/ns/dcat#")
+
+
+class TestEuroEuroDCATAPParser(object):
+
+    def _get_file_contents(self, file_name):
+        path = os.path.join(os.path.dirname(__file__),
+                            '..', 'examples',
+                            file_name)
+        with open(path, 'r') as f:
+            return f.read()
+
+    def test_dataset_all_fields(self):
+
+        contents = self._get_file_contents('dataset.rdf')
+
+        p = EuroDCATAPParser()
+
+        datasets = p.parse(contents)
+
+        eq_(len(datasets), 1)
+
+        dataset = datasets[0]
+
+        # Basic fields
+
+        eq_(dataset['title'], u'Zimbabwe Regional Geochemical Survey.')
+        eq_(dataset['notes'], u'During the period 1982-86 a team of geologists from the British Geological Survey ...')
+        eq_(dataset['url'], 'http://dataset.info.org')
+
+        # Tags
+
+        eq_(sorted(dataset['tags'], key=lambda k: k['name']), [{'name': u'exploration'},
+                                                               {'name': u'geochemistry'},
+                                                               {'name': u'geology'}])
+        # Extras
+
+        def _get_extra_value(key):
+            v = [extra['value'] for extra in dataset['extras'] if extra['key'] == key]
+            return v[0] if v else None
+
+        def _get_extra_value_as_list(key):
+            value = _get_extra_value(key)
+            return json.loads(value) if value else []
+
+        #  Simple values
+        eq_(_get_extra_value('dcat_issued'), u'2012-05-10')
+        eq_(_get_extra_value('dcat_modified'), u'2012-05-10T21:04:00')
+        eq_(_get_extra_value('dcat_identifier'), u'9df8df51-63db-37a8-e044-0003ba9b0d98')
+        eq_(_get_extra_value('dcat_alternate_identifier'), u'alternate-identifier-x343')
+        eq_(_get_extra_value('dcat_version'), u'2.3')
+        eq_(_get_extra_value('dcat_version_notes'), u'New schema added')
+
+        #eq_(_get_extra_value('dcat_frequency'), '')
+        #eq_(_get_extra_value('dcat_spatial'), '')
+        #eq_(_get_extra_value('dcat_temporal'), '')
+
+        #  Lists
+        eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])
+        eq_(sorted(_get_extra_value_as_list('dcat_theme')), [u'Earth Sciences',
+                                                             u'http://eurovoc.europa.eu/100142',
+                                                             u'http://eurovoc.europa.eu/209065'])
+        eq_(sorted(_get_extra_value_as_list('dcat_conforms_to')), [u'Standard 1', u'Standard 2'])
+
+        # Dataset URI
+        eq_(_get_extra_value('uri'), u'https://data.some.org/catalog/datasets/9df8df51-63db-37a8-e044-0003ba9b0d98')
+
+        # Resources
+        eq_(len(dataset['resources']), 1)
+
+        resource = dataset['resources'][0]
+
+        #  Simple values
+        eq_(resource['name'], u'Some website')
+        eq_(resource['description'], u'A longer description')
+
+#        eq_(resource['format'], u'')
+#        eq_(resource['mimetype'], u'')
+        eq_(resource['dcat_issued'], u'2012-05-11')
+        eq_(resource['dcat_modified'], u'2012-05-01T00:04:06')
+        eq_(resource['dcat_status'], u'http://purl.org/adms/status/Completed')
+
+        # These two are likely to need clarification
+        eq_(resource['dcat_license'], u'http://creativecommons.org/licenses/by/3.0/')
+        eq_(resource['dcat_rights'], u'Some statement about rights')
+
+        eq_(resource['url'], u'http://www.bgs.ac.uk/gbase/geochemcd/home.html')
+        assert 'dcat_download_url' not in resource
+
+        eq_(resource['size'], 12323)
+
+        # Distribution URI
+        eq_(resource['uri'], u'https://data.some.org/catalog/datasets/9df8df51-63db-37a8-e044-0003ba9b0d98/1')
+
+    def test_distribution_access_url(self):
+        g = Graph()
+
+        dataset1 = URIRef("http://example.org/datasets/1")
+        g.add((dataset1, RDF.type, DCAT.Dataset))
+
+        distribution1_1 = URIRef("http://example.org/datasets/1/ds/1")
+        g.add((distribution1_1, RDF.type, DCAT.Distribution))
+        g.add((distribution1_1, DCAT.accessURL, Literal('http://access.url.org')))
+        g.add((dataset1, DCAT.distribution, distribution1_1))
+
+        p = EuroDCATAPParser()
+
+        p.g = g
+
+        datasets = p.parse()
+
+        resource = datasets[0]['resources'][0]
+
+        eq_(resource['url'], u'http://access.url.org')
+        assert 'dcat_download_url' not in resource
+
+    def test_distribution_download_url(self):
+        g = Graph()
+
+        dataset1 = URIRef("http://example.org/datasets/1")
+        g.add((dataset1, RDF.type, DCAT.Dataset))
+
+        distribution1_1 = URIRef("http://example.org/datasets/1/ds/1")
+        g.add((distribution1_1, RDF.type, DCAT.Distribution))
+        g.add((distribution1_1, DCAT.downloadURL, Literal('http://download.url.org')))
+        g.add((dataset1, DCAT.distribution, distribution1_1))
+
+        p = EuroDCATAPParser()
+
+        p.g = g
+
+        datasets = p.parse()
+
+        resource = datasets[0]['resources'][0]
+
+        eq_(resource['url'], u'http://download.url.org')
+        eq_(resource['dcat_download_url'], u'http://download.url.org')
+
+    def test_distribution_both_access_and_download_url(self):
+        g = Graph()
+
+        dataset1 = URIRef("http://example.org/datasets/1")
+        g.add((dataset1, RDF.type, DCAT.Dataset))
+
+        distribution1_1 = URIRef("http://example.org/datasets/1/ds/1")
+        g.add((distribution1_1, RDF.type, DCAT.Distribution))
+        g.add((distribution1_1, DCAT.accessURL, Literal('http://access.url.org')))
+        g.add((distribution1_1, DCAT.downloadURL, Literal('http://download.url.org')))
+        g.add((dataset1, DCAT.distribution, distribution1_1))
+
+        p = EuroDCATAPParser()
+
+        p.g = g
+
+        datasets = p.parse()
+
+        resource = datasets[0]['resources'][0]
+
+        eq_(resource['url'], u'http://access.url.org')
+        eq_(resource['dcat_download_url'], u'http://download.url.org')
+
+    def test_catalog_xml_rdf(self):
+
+        contents = self._get_file_contents('catalog.rdf')
+
+        p = EuroDCATAPParser()
+
+        datasets = p.parse(contents)
+
+        eq_(len(datasets), 2)
+
+        dataset = (datasets[0] if datasets[0]['title'] == 'Example dataset 1'
+                   else datasets[1])
+
+        eq_(dataset['title'], 'Example dataset 1')
+        eq_(len(dataset['resources']), 3)
+        eq_(len(dataset['tags']), 2)
