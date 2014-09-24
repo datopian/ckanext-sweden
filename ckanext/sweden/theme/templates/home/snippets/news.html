@@ -1,0 +1,27 @@
+{% set posts = h.get_recent_blog_posts() %}
+
+<h2>{{ _("News") }}</h2>
+
+<div class="row">
+  {% for post in posts %}
+    <div class="span4">
+      {% set truncate = truncate or 180 %}
+      {% set truncate_title = truncate_title or 80 %}
+      {% set title = post.title %}
+      {% set notes = h.markdown_extract(post.content, extract_length=truncate) %}
+      <header>
+        <h3 class="dataset-heading">
+          {{ h.link_to(h.truncate(title, truncate_title),
+            h.url_for('news_post', title=post.url)) }}
+        </h3>
+        <p class="blog-post-meta muted"><i class="icon-time"></i> <time datetime="{{h.render_datetime(post.created, '%Y-%m-%dT%H:%M:%S', True)}}">{{h.render_datetime(post.created)}}</time></p>
+      </header>
+      {% if notes %}
+        <div>{{ notes|urlize }}<br>
+        <a href="{{h.url_for('news_post', title=post.url)}}" title="{{_('Show full blog post')}}">{{_('Read more')}}&hellip;</a></div>
+      {% else %}
+        <p class="empty">{{ _("This post has no content") }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>

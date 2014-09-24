@@ -1,0 +1,8 @@
+{% set recently_updated = h.get_recently_updated_datasets() %}
+
+<div class="box">
+  <h3 class="heading">{{ _('Recently updated datasets') }}</h3>
+  <div class="inner">
+    {% snippet 'snippets/package_list.html', packages=recently_updated %}
+  </div>
+</div>

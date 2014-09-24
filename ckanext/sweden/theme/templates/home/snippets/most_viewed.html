@@ -1,0 +1,8 @@
+{% set most_viewed = h.get_most_viewed_datasets() %}
+
+<div class="box">
+  <h3 class="heading">{{ _('Most viewed datasets') }}</h3>
+  <div class="inner">
+    {% snippet 'snippets/package_list.html', packages=most_viewed %}
+  </div>
+</div>
