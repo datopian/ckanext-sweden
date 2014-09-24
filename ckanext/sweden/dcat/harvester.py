@@ -10,7 +10,7 @@ from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 # TODO: refactor caknext-dcat so lxml is not needed
 from ckanext.dcat.harvesters import DCATHarvester
 
-from ckanext.sweden.dcat.parsers import DCATAPParser
+from ckanext.sweden.dcat.parsers import EuroDCATAPParser
 
 
 log = logging.getLogger(__name__)
@@ -139,7 +139,7 @@ class RDFDCATHarvester(DCATHarvester):
         if not content:
             return None
 
-        parser = DCATAPParser()
+        parser = EuroDCATAPParser()
         # TODO: format
         datasets = parser.parse(content)
 

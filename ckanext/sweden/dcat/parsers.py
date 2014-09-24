@@ -17,6 +17,11 @@ FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 
 class RDFParser(object):
+    '''
+    A base class for RDF parsers based on rdflib
+
+    Contains helper functions for parsing the graph
+    '''
 
     def __init__(self):
 
@@ -82,28 +87,39 @@ class RDFParser(object):
         '''
         return [unicode(o) for o in self.g.objects(subject, predicate)]
 
-    def parse(self, contents, _format=None):
+    def parse(self, data=None, _format=None):
         '''
         Parses and RDF graph serialization and returns CKAN dataset dicts
 
-        Contents are a string with the serialized RDF graph (eg RDF/XML, N3
+        Data is a string with the serialized RDF graph (eg RDF/XML, N3
         ... ). By default RF/XML is expected. The optional parameter _format
         can be used to tell rdflib otherwise.
+
+        If no data is provided it's assumed that the graph property
+        (`g`) has been set directly.
 
         Different profiles should implement this method and return a list of
         CKAN dataset dicts (something that can be passed to `package_create`
         or `package_update`).
 
         '''
+        raise NotImplementedError
 
-        raise NotImplemented
 
+class EuroDCATAPParser(RDFParser):
+    '''
+    An RDF parser based on the DCAT-AP for data portals in Europe
 
-class DCATAPParser(RDFParser):
+    More information and specification:
 
-    def parse(self, contents, _format=None):
+    https://joinup.ec.europa.eu/asset/dcat_application_profile
 
-        self.g.parse(data=contents, format=_format)
+    '''
+
+    def parse(self, contents=None, _format=None):
+
+        if contents:
+            self.g.parse(data=contents, format=_format)
 
         ckan_datasets = []
 
