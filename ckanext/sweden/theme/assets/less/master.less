@@ -19,6 +19,35 @@ body {
 [role=main],
 .main {
   background: @bg-dark;
+  border: 1px solid darken(@bg-dark, 10%);
+  border-width: 1px 0;
+}
+a {
+  color: @primary;
+  .transition(all 0.2s ease-in);
+  &:hover {
+    color: @text;
+  }
+}
+.btn-primary {
+  border-color: @primary;
+  background: @primary;
+}
+.btn-primary:hover,
+.btn-primary:active,
+.btn-group.open .btn-primary.dropdown-toggle {
+  border-color: darken(@primary, 10%);
+  background: darken(@primary, 10%);
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-submenu:hover > a,
+.dropdown-submenu:focus > a {
+  background: @primary;
+}
+.media-view:hover,
+.media-view.hovered {
+  border-color: @primary;
 }
 
 // Header
@@ -82,7 +111,6 @@ body {
           letter-spacing: -0.5px;
           border-bottom: 4px solid @bg;
           .border-radius(0);
-          .transition(all 0.2s ease-in);
         }
         a:hover,
         &.active a {
@@ -91,6 +119,9 @@ body {
         }
       }
     }
+  }
+  .debug {
+    color: mix(@text, @bg, 50%);
   }
 }
 
@@ -101,6 +132,9 @@ body {
   label,
   small {
     color: @primary;
+  }
+  a:hover {
+    color: @text;
   }
   .footer-links {
     width: inherit;
@@ -125,49 +159,98 @@ body {
   }
 }
 
-// Homepage
-.homepage .hero {
-  background: @primary;
-  .module-search {
-    padding: 10px 0;
-    border-width: 0;
-    background: transparent;
+// Content
+.container {
+  .toolbar {
+    padding-left: 15px;
+  }
+  .wrapper {
+    border-color: darken(@bg-dark, 10%);
+    .border-radius(0);
     .box-shadow(none);
-    .search-form,
-    .tags {
-      padding: 0;
-      background: transparent;
-    }
-    .search-form {
-      .heading {
-        font-weight: 300;
+  }
+}
+
+// Homepage
+.homepage {
+  [role=main],
+  .main {
+    border-width: 0;
+  }
+  .hero {
+    background: @primary;
+    .container {
+      padding: 10px 0;
+      .search-form,
+      .tags {
+        padding: 0;
+        background: transparent;
       }
-      .search-giant input {
-        font-size: 21px;
-        line-height: 1;
-        border-width: 0;
-        .box-shadow(none);
-        .border-radius(6px);
-      }
-      .search-input button i {
-        color: @text;
-      }
-    }
-    .tags {
-      h3 {
-        display: none;
-      }
-      .tag {
-        color: @primary;
-        background-color: #D2E4F2;
-        border-width: 0;
-        padding: 4px 12px;
-        .box-shadow(none);
-        .border-radius(6px);
-        &:hover {
-          background-color: @bg;
+      .search-form {
+        border-bottom-width: 0;
+        .heading {
+          display: none;
+        }
+        .search-giant input {
+          font-size: 21px;
+          line-height: 1;
+          border-width: 0;
+          .box-shadow(none);
+          .border-radius(6px);
+        }
+        .search-input button i {
+          color: @text;
         }
       }
+      .tags {
+        h3 {
+          display: none;
+        }
+        .tag {
+          color: @primary;
+          background-color: #D2E4F2;
+          border-width: 0;
+          padding: 4px 12px;
+          .box-shadow(none);
+          .border-radius(6px);
+          &:hover {
+            background-color: @bg;
+          }
+        }
+      }
+    }
+  }
+  .boxes {
+    background-color: @bg;
+    .box {
+      background: @bg-dark;
+      border-width: 0;
+      .border-radius(0);
+      .box-shadow(none);
+      .heading {
+        padding: 10px 20px;
+        margin: 0;
+        border-bottom: 1px solid darken(@bg-dark, 10%);
+      }
+      .inner {
+        padding: 20px;
+      }
+    }
+  }
+  .dataset-item {
+    border-bottom-width: 0;
+    padding-bottom: 0;
+    .dataset-heading {
+      padding: 0;
+    }
+  }
+  .news {
+    border: 1px solid darken(@bg-dark, 10%);
+    border-width: 1px 0;
+    h2 {
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid darken(@bg-dark, 10%);
     }
   }
 }

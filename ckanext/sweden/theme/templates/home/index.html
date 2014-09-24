@@ -3,27 +3,27 @@
 {% block primary_content %}
   <div role="main" class="hero">
     <div class="container">
-      {% block search %}
-        {% snippet 'home/snippets/search.html' %}
-      {% endblock %}
+      {% snippet 'home/snippets/search.html' %}
     </div>
   </div>
-  <div role="main">
+  <div role="main" class="boxes">
     <div class="container">
       <div class="row">
         <div class="span4">
-          Most viewed...
-          {#{% snippet 'home/snippets/most_viewed.html' %}#}
+          {% snippet 'home/snippets/most_viewed.html' %}
         </div>
         <div class="span4">
-          Recently updated...
-          {#{% snippet 'home/snippets/recently_updated.html' %}#}
+          {% snippet 'home/snippets/recently_updated.html' %}
         </div>
         <div class="span4">
-          Top groups...
-          {#{% snippet 'home/snippets/top_groups.html' %}#}
+          {% snippet 'home/snippets/top_groups.html' %}
         </div>
       </div>
+    </div>
+  </div>
+  <div role="main" class="news">
+    <div class="container">
+      {% snippet 'home/snippets/news.html' %}
     </div>
   </div>
 {% endblock %}
