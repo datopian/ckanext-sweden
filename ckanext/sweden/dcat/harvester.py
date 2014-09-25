@@ -217,6 +217,10 @@ class RDFDCATHarvester(DCATHarvester):
             previous_object.current = False
             previous_object.add()
 
+        # Flag this object as the current one
+        harvest_object.current = True
+        harvest_object.add()
+
         context = {
             'user': self._get_user_name(),
             'return_id_only': True,
@@ -230,6 +234,10 @@ class RDFDCATHarvester(DCATHarvester):
             # Don't change the dataset name even if the title has
             dataset['name'] = existing_dataset['name']
             dataset['id'] = existing_dataset['id']
+
+            # Save reference to the package on the object
+            harvest_object.package_id = dataset['id']
+            harvest_object.add()
 
             try:
                 p.toolkit.get_action('package_update')(context, dataset)
@@ -248,6 +256,10 @@ class RDFDCATHarvester(DCATHarvester):
             dataset['id'] = unicode(uuid.uuid4())
             package_schema['id'] = [unicode]
 
+            # Save reference to the package on the object
+            harvest_object.package_id = dataset['id']
+            harvest_object.add()
+
             # Defer constraints and flush so the dataset can be indexed with
             # the harvest object id (on the after_show hook from the harvester
             # plugin)
@@ -262,13 +274,6 @@ class RDFDCATHarvester(DCATHarvester):
 
             log.info('Created dataset %s', dataset['name'])
 
-        # Flag this object as the current one
-        harvest_object.current = True
-
-        # Save reference to the package on the object
-        harvest_object.package_id = dataset['id']
-
-        harvest_object.add()
 
         model.Session.commit()
 
