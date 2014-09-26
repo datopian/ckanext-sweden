@@ -24,22 +24,41 @@ To enable, activate your CKAN virtual environment and then:
 4. Restart CKAN.
 
 
-Tests
------
+DCAT Harvesting
+---------------
 
-To run the tests, first install the dev requirements:
+To enable, activate your CKAN virtual environment and then:
 
-    pip install -r dev-requirements.txt
+1. Install Redis:
 
-Then do:
+    sudo apt-get install redis-server
 
-    nosetests --nologcapture --with-pylons=test.ini
+2. Install `ckanext-harvest`:
 
-To run the tests with coverage, first install coverage (`pip install coverage`)
-then do:
+    git clone https://github.com/ckan/ckanext-harvest
+    cd ckanext-harvest
+    git checkout stable
+    pip install -r pip-requirements.txt
+    python setup.py develop
 
-    nosetests --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.sweden --cover-inclusive --cover-erase --cover-tests
+3. Install `ckanext-dcat`:
 
+    git clone https://github.com/ckan/ckanext-dcat
+    cd ckanext-dcat
+    # tmp
+    pip install lxml
+    python setup.py develop
+
+4. Install the dcat plugin's requirements:
+
+        pip install -r ckanext/sweden/dcat/requirements.txt
+
+5. Add `harvest`  and `dcat_rdf_harvester` to `ckan.plugins`.
+
+6. Restart CKAN.
+
+You should see the harvest pages at `/harvest` and `Generic DCAT RDF Harvester`
+listed as a type on `/harvest/new`.
 
 Theme
 -----
@@ -61,3 +80,22 @@ To modify the theme of the ckanext-sweden theme you'll need to:
 
 4. Once you've made your changes make sure you commit the changes in
    `./ckanext/theme/resources`
+
+Tests
+-----
+
+To run the tests, first install the dev requirements (and Redis, see above):
+
+    pip install -r dev-requirements.txt
+
+Then do:
+
+    nosetests --nologcapture --ckan --with-pylons=test.ini
+
+To run the tests with coverage, first install coverage (`pip install coverage`)
+then do:
+
+    nosetests --nologcapture --ckan --with-pylons=test.ini --with-coverage --cover-package=ckanext.sweden --cover-inclusive --cover-erase --cover-tests
+
+
+

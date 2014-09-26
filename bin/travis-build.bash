@@ -24,9 +24,27 @@ cd ckan
 paster db init -c test-core.ini
 cd -
 
+echo "Installing ckanext-harvest, including redis"
+sudo apt-get install redis-server
+git clone https://github.com/ckan/ckanext-harvest
+cd ckanext-harvest
+git checkout stable
+pip install -r pip-requirements.txt
+python setup.py develop
+cd -
+
+echo "Installing ckanext-dcat"
+git clone https://github.com/ckan/ckanext-dcat
+cd ckanext-dcat
+# tmp
+pip install lxml
+python setup.py develop
+cd -
+
 echo "Installing ckanext-sweden and its requirements..."
 python setup.py develop
 pip install -r ckanext/sweden/blog/requirements.txt
+pip install -r ckanext/sweden/dcat/requirements.txt
 pip install -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."

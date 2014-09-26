@@ -25,9 +25,9 @@ setup(
     entry_points='''
         [ckan.plugins]
         # Add plugins here, e.g.
-        # myplugin=ckanext.sweden.plugin:PluginClass
         sweden_blog=ckanext.sweden.blog.plugin:BlogPlugin
         sweden_theme=ckanext.sweden.theme.plugin:ThemePlugin
+        dcat_rdf_harvester=ckanext.sweden.dcat.harvester:RDFDCATHarvester
 
         [paste.paster_command]
         sweden_blog_init = ckanext.sweden.blog.commands.blog_init:InitDB
