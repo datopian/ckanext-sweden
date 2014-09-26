@@ -44,7 +44,7 @@ cd -
 echo "Installing ckanext-sweden and its requirements..."
 python setup.py develop
 pip install -r ckanext/sweden/blog/requirements.txt
-pip install -r requirements.txt
+pip install -r ckanext/sweden/dcat/requirements.txt
 pip install -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."
