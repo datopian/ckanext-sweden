@@ -115,13 +115,13 @@ class RDFDCATHarvester(DCATHarvester):
                                 package_id=guid_to_package_id[guid],
                                 extras=[HarvestObjectExtra(key='status',
                                                            value='delete')])
-            object_ids.append(obj.id)
 
             # Mark the rest of objects for this guid as not current
             model.Session.query(HarvestObject) \
                          .filter_by(guid=guid) \
                          .update({'current': False}, False)
             obj.save()
+            object_ids.append(obj.id)
 
         return object_ids
 
@@ -187,7 +187,8 @@ class RDFDCATHarvester(DCATHarvester):
         status = self._get_object_extra(harvest_object, 'status')
         if status == 'delete':
             # Delete package
-            context = {'model': model, 'session': model.Session, 'user': self._get_user_name()}
+            context = {'model': model, 'session': model.Session,
+                       'user': self._get_user_name(), 'ignore_auth': True}
 
             p.toolkit.get_action('package_delete')(context, {'id': harvest_object.package_id})
             log.info('Deleted package {0} with guid {1}'.format(harvest_object.package_id,
