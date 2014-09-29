@@ -116,10 +116,10 @@ class EuroDCATAPParser(RDFParser):
 
     '''
 
-    def parse(self, contents=None, _format=None):
+    def parse(self, data=None, _format=None):
 
-        if contents:
-            self.g.parse(data=contents, format=_format)
+        if data:
+            self.g.parse(data=data, format=_format)
 
         ckan_datasets = []
 
@@ -241,7 +241,7 @@ if __name__ == '__main__':
 
     contents = args.file.read()
 
-    parser = DCATAPParser()
+    parser = EuroDCATAPParser()
     ckan_datasets = parser.parse(contents, _format=args.format)
 
     indent = 4 if args.pretty else None
