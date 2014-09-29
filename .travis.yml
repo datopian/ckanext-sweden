@@ -7,5 +7,7 @@ install:
     - ./bin/travis-build.bash
     - pip install coveralls
 script: ./bin/travis-run.sh
+services:
+    - redis-server
 after_success:
     - coveralls

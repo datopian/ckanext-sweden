@@ -24,8 +24,7 @@ cd ckan
 paster db init -c test-core.ini
 cd -
 
-echo "Installing ckanext-harvest, including redis"
-sudo apt-get install redis-server
+echo "Installing ckanext-harvest"
 git clone https://github.com/ckan/ckanext-harvest
 cd ckanext-harvest
 git checkout stable
