@@ -110,8 +110,6 @@ class TestDCATHarvestFunctional(object):
     @classmethod
     def setup_class(cls):
 
-        raise nose.SkipTest
-
         cls.gather_consumer = queue.get_consumer('ckan.harvest.gather.test',
                                                  'harvest_job_id')
         cls.fetch_consumer = queue.get_consumer('ckan.harvest.fetch.test',
