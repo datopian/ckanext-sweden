@@ -335,3 +335,41 @@ class TestDCATHarvestFunctional(object):
         eq_(results['count'], 1)
 
         eq_(results['results'][0]['title'], 'Example dataset 1')
+
+
+    def test_harvest_bad_format(self):
+
+        bad_format_file = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dcat="http://www.w3.org/ns/dcat#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <dcat:Catalog 
+        </rdf:RDF>
+        '''
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, self.mock_url,
+                               body=bad_format_file)
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, self.mock_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source()
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        # Run the jobs to mark the previous one as Finished
+        self._run_jobs()
+
+        # Get the harvest source with the udpated status
+        harvest_source = h.call_action('harvest_source_show',
+                                       id=harvest_source['id'])
+
+        last_job_status = harvest_source['status']['last_job']
+
+        eq_(last_job_status['status'], 'Finished')
+        assert ('Error parsing the RDF file'
+                in last_job_status['gather_error_summary'][0][0])

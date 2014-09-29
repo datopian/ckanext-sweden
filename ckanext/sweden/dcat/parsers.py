@@ -3,7 +3,7 @@
 # Dev stuff, will probably get removed
 import sys
 import argparse
-
+import xml
 import json
 
 import rdflib
@@ -16,6 +16,10 @@ VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 
+class RDFParserException(Exception):
+    pass
+
+
 class RDFParser(object):
     '''
     A base class for RDF parsers based on rdflib
@@ -26,6 +30,26 @@ class RDFParser(object):
     def __init__(self):
 
         self.g = rdflib.Graph()
+
+    def _parse_data(self, data, _format=None):
+        '''
+        Call the rdflib parse function with the provided data
+
+        Data is a string with the serialized RDF graph (eg RDF/XML, N3
+        ... ). By default RF/XML is expected. The optional parameter _format
+        can be used to tell rdflib otherwise.
+
+        If errors where found during parsing, RDFParserException is raised
+
+        '''
+        try:
+            self.g.parse(data=data, format=_format)
+        # Apparently there is no single way of catching exceptions from all
+        # rdflib parsers at once, so if you use a new one and the parsing
+        # exceptions are not cached, add them here.
+        except (SyntaxError, xml.sax.SAXParseException), e:
+
+            raise RDFParserException(e)
 
     def _datasets(self):
         '''
@@ -95,6 +119,9 @@ class RDFParser(object):
         ... ). By default RF/XML is expected. The optional parameter _format
         can be used to tell rdflib otherwise.
 
+        It should raise a RDFParserException if there was some error during
+        the parsing. Calling `self._parse_data()` will handle this for you.
+
         If no data is provided it's assumed that the graph property
         (`g`) has been set directly.
 
@@ -119,7 +146,7 @@ class EuroDCATAPParser(RDFParser):
     def parse(self, data=None, _format=None):
 
         if data:
-            self.g.parse(data=data, format=_format)
+            self._parse_data(data, _format)
 
         ckan_datasets = []
 

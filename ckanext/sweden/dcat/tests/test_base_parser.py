@@ -3,7 +3,7 @@ import nose
 from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import Namespace, RDF
 
-from ckanext.sweden.dcat.parsers import RDFParser
+from ckanext.sweden.dcat.parsers import RDFParser, RDFParserException
 
 DCT = Namespace("http://purl.org/dc/terms/")
 TEST = Namespace("http://test.org/")
@@ -177,3 +177,54 @@ class TestBaseRDFParser(object):
         p = RDFParser()
 
         nose.tools.assert_raises(NotImplementedError, p.parse, '')
+
+    def test_parse_data(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+            <rdfs:label>Some label</rdfs:label>
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        p = RDFParser()
+
+        eq_(len(p.g), 0)
+
+        p._parse_data(data)
+
+        eq_(len(p.g), 2)
+
+    def test_parse_data_different_format(self):
+
+        data = '''
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+        <http://example.org> a rdfs:SomeClass ;
+            rdfs:label "Some label" .
+        '''
+
+        p = RDFParser()
+
+        eq_(len(p.g), 0)
+
+        p._parse_data(data, _format='n3')
+
+        eq_(len(p.g), 2)
+
+    def test_parse_data_raises_on_parse_error(self):
+
+        p = RDFParser()
+
+        data = 'Wrong data'
+
+        nose.tools.assert_raises(RDFParserException, p._parse_data, '')
+
+        nose.tools.assert_raises(RDFParserException, p._parse_data, data)
+
+        nose.tools.assert_raises(RDFParserException, p._parse_data, data,
+                                 _format='n3',)
