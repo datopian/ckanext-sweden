@@ -27,3 +27,9 @@
     </div>
   </div>
 {% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% resource 'theme/scripts/jquery.matchHeight.js' %}
+  {% resource 'theme/scripts/homepage-cols.js' %}
+{% endblock %}
