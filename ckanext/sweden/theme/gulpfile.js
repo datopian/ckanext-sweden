@@ -39,6 +39,7 @@ gulp.task('images', function() {
 
 gulp.task('scripts', function() {
   return gulp.src(paths.src.scripts)
+    .pipe(compressor())
     .pipe(gulp.dest(paths.dest.scripts));
 });
 
