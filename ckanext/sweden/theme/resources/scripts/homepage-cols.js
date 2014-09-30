@@ -1,1 +1,1 @@
-this.ckan.module('homepage-cols', function($, _) { return { initialize: function () { $('.span4 .box', this.el).matchHeight(); } }; });
+!function(n){n.module("homepage-cols",function(n){return{initialize:function(){n(".span4 .box",this.el).matchHeight()}}})}(window.ckan);

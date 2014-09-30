@@ -4,6 +4,7 @@ var imagemin = require('gulp-imagemin');
 var less = require('gulp-less');
 var changed = require('gulp-changed');
 var compressor = require('gulp-compressor');
+var uglify = require('gulp-uglify');
 
 var paths = {
   src: {
@@ -39,7 +40,7 @@ gulp.task('images', function() {
 
 gulp.task('scripts', function() {
   return gulp.src(paths.src.scripts)
-    .pipe(compressor())
+    .pipe(uglify())
     .pipe(gulp.dest(paths.dest.scripts));
 });
 
