@@ -98,8 +98,12 @@ a {
     top: inherit;
     bottom: 0;
   }
+  .nav {
+    margin-right: 4px;
+  }
   .navigation {
     margin-right: 0;
+    margin-top: 20px;
     .nav-pills {
       font-size: 18px;
       li {
@@ -113,9 +117,12 @@ a {
           .border-radius(0);
         }
         a:hover,
-        &.active a {
+        &.active a,
+        &.active a:hover {
+          color: @text;
           background-color: transparent;
           border-bottom-color: @secondary;
+          .box-shadow(none);
         }
       }
     }
@@ -176,9 +183,11 @@ a {
   [role=main],
   .main {
     border-width: 0;
+    min-height: 0;
   }
   .hero {
     background: @primary;
+    min-height: 0;
     .container {
       padding: 10px 0;
       .search-form,

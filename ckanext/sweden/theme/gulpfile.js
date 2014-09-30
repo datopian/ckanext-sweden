@@ -9,11 +9,16 @@ var paths = {
   src: {
     less: './assets/less/**/*',
     images: './assets/images/**/*',
+    scripts: [
+      './bower_components/matchHeight/jquery.matchHeight.js',
+      './assets/scripts/**/*'
+    ],
     fonts: './bower_components/open-sans-fontface/fonts/**/*'
   },
   dest: {
     less: './resources/styles/',
     images: './public/images/',
+    scripts: './resources/scripts/',
     fonts: './resources/styles/fonts/'
   }
 };
@@ -32,6 +37,11 @@ gulp.task('images', function() {
     .pipe(gulp.dest(paths.dest.images));
 });
 
+gulp.task('scripts', function() {
+  return gulp.src(paths.src.scripts)
+    .pipe(gulp.dest(paths.dest.scripts));
+});
+
 gulp.task('fonts', function() {
   return gulp.src(paths.src.fonts)
     .pipe(gulp.dest(paths.dest.fonts));
@@ -40,6 +50,7 @@ gulp.task('fonts', function() {
 gulp.task('watch', function() {
   gulp.watch(paths.src.less, ['less']);
   gulp.watch(paths.src.images, ['images']);
+  gulp.watch(paths.src.scripts, ['scripts']);
 });
 
-gulp.task('default', ['less', 'images', 'fonts']);
+gulp.task('default', ['less', 'images', 'scripts', 'fonts']);
