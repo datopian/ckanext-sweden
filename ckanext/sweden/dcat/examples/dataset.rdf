@@ -5,6 +5,7 @@
 	xmlns:dcat="http://www.w3.org/ns/dcat#"
 	xmlns:foaf="http://xmlns.com/foaf/0.1/"
     xmlns:adms="http://www.w3.org/ns/adms#"
+    xmlns:schema="http://schema.org/"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -30,6 +31,12 @@
     <dcat:conformsTo>Standard 1</dcat:conformsTo>
     <dcat:conformsTo>Standard 2</dcat:conformsTo>
     <dct:license rdf:resource="https://data.some.org/link/to/license"/>
+    <dct:temporal>
+        <dct:PeriodOfTime>
+            <schema:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1905-03-01</schema:startDate>
+            <schema:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2013-01-05</schema:endDate>
+        </dct:PeriodOfTime>
+    </dct:temporal>
     <dct:publisher>
         <foaf:Organization>
             <foaf:name>Publishing Organization for dataset 1</foaf:name>

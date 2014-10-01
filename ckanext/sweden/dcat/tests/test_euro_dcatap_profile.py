@@ -64,10 +64,11 @@ class TestEuroDCATAPProfile(object):
         eq_(_get_extra_value('dcat_alternate_identifier'), u'alternate-identifier-x343')
         eq_(_get_extra_value('dcat_version'), u'2.3')
         eq_(_get_extra_value('dcat_version_notes'), u'New schema added')
+        eq_(_get_extra_value('dcat_temporal_start'), '1905-03-01')
+        eq_(_get_extra_value('dcat_temporal_end'), '2013-01-05')
 
         # eq_(_get_extra_value('dcat_frequency'), '')
         # eq_(_get_extra_value('dcat_spatial'), '')
-        # eq_(_get_extra_value('dcat_temporal'), '')
 
         #  Lists
         eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])

@@ -124,3 +124,71 @@ class TestBaseRDFProfile(object):
 
         assert isinstance(value, list)
         eq_(value, [])
+
+    def test_time_interval_schema_org(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:schema="http://schema.org/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+            <dct:temporal>
+                <dct:PeriodOfTime>
+                    <schema:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1905-03-01</schema:startDate>
+                    <schema:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2013-01-05</schema:endDate>
+                </dct:PeriodOfTime>
+            </dct:temporal>
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        g = Graph()
+
+        g.parse(data=data)
+
+        p = RDFProfile(g)
+
+        start, end = p._time_interval(URIRef('http://example.org'), DCT.temporal)
+
+        eq_(start, '1905-03-01')
+        eq_(end, '2013-01-05')
+
+    def test_time_interval_w3c_time(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:time="http://www.w3.org/2006/time"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+          <dct:temporal>
+            <dct:PeriodOfTime>
+              <time:hasBeginning>
+                <time:Instant>
+                  <time:inXSDDateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1904</time:inXSDDateTime>
+                </time:Instant>
+              </time:hasBeginning>
+              <time:hasEnd>
+                <time:Instant>
+                  <time:inXSDDateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-03-22</time:inXSDDateTime>
+                </time:Instant>
+              </time:hasEnd>
+            </dct:PeriodOfTime>
+          </dct:temporal>
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        g = Graph()
+
+        g.parse(data=data)
+
+        p = RDFProfile(g)
+
+        start, end = p._time_interval(URIRef('http://example.org'), DCT.temporal)
+
+        eq_(start, '1904-01-01')
+        eq_(end, '2014-03-22')

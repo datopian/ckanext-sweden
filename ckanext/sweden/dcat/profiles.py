@@ -8,6 +8,8 @@ DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
 VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+SCHEMA = Namespace('http://schema.org/')
+TIME = Namespace('http://www.w3.org/2006/time')
 
 
 class RDFProfile(object):
@@ -45,7 +47,7 @@ class RDFProfile(object):
         '''
         Given a subject and a predicate, returns the value of the object
 
-        Both subject and predicate must be rdflib.term.URIRef objects
+        Both subject and predicate must be rdflib URIRef or BNode objects
 
         If found, the unicode representation is returned, else None
         '''
@@ -58,7 +60,7 @@ class RDFProfile(object):
         Given a subject and a predicate, returns the value of the object as an
         integer
 
-        Both subject and predicate must be rdflib.term.URIRef objects
+        Both subject and predicate must be rdflib URIRef or BNode objects
 
         If the value can not be parsed as intger, returns None
         '''
@@ -75,11 +77,51 @@ class RDFProfile(object):
         Given a subject and a predicate, returns a list with all the values of
         the objects
 
-        Both subject and predicate must be rdflib.term.URIRef objects
+        Both subject and predicate must be rdflib URIRef or BNode  objects
 
         If no values found, returns an empty string
         '''
         return [unicode(o) for o in self.g.objects(subject, predicate)]
+
+    def _time_interval(self, subject, predicate):
+        '''
+        Returns the start and end date for a time interval object
+
+        Both subject and predicate must be rdflib URIRef or BNode  objects
+
+        It checks for time intervals defined with both schema.org startDate &
+        endDate and W3C Time hasBeginning & hasEnd.
+
+        Note that partial dates will be expanded to the first month / day
+        value, eg '1904' -> '1904-01-01'.
+
+        Returns a tuple with the start and end date values, both of which
+        can be None if not found
+        '''
+
+        start_date = end_date = None
+
+        for interval in self.g.objects(subject, predicate):
+            # Fist try the schema.org way
+            start_date = self._object_value(interval, SCHEMA.startDate)
+            end_date = self._object_value(interval, SCHEMA.endDate)
+
+            if start_date or end_date:
+                return start_date, end_date
+
+            # If no luck, try the w3 time way
+            start_nodes = [t for t in self.g.objects(interval,
+                                                     TIME.hasBeginning)]
+            end_nodes = [t for t in self.g.objects(interval,
+                                                   TIME.hasEnd)]
+            if start_nodes:
+                start_date = self._object_value(start_nodes[0],
+                                                TIME.inXSDDateTime)
+            if end_nodes:
+                end_date = self._object_value(end_nodes[0],
+                                              TIME.inXSDDateTime)
+
+        return start_date, end_date
 
 
 class EuropeanDCATAPProfile(RDFProfile):
@@ -143,6 +185,13 @@ class EuropeanDCATAPProfile(RDFProfile):
             if values:
                 dataset_dict['extras'].append({'key': key,
                                             'value': json.dumps(values)})
+
+        start, end = self._time_interval(dataset_ref, DCT.temporal)
+        if start:
+            dataset_dict['extras'].append({'key': 'dcat_temporal_start', 'value': start})
+        if end:
+            dataset_dict['extras'].append({'key': 'dcat_temporal_end', 'value': end})
+
 
         # Dataset URI (explicitly show the missing ones)
         dataset_uri = (unicode(dataset_ref)
