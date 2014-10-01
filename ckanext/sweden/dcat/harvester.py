@@ -10,7 +10,7 @@ from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 # TODO: refactor caknext-dcat so lxml is not needed
 from ckanext.dcat.harvesters import DCATHarvester
 
-from ckanext.sweden.dcat.parsers import RDFParserException, EuroDCATAPParser
+from ckanext.sweden.dcat.parsers import RDFParserException, RDFParser
 
 
 log = logging.getLogger(__name__)
@@ -139,21 +139,17 @@ class RDFDCATHarvester(DCATHarvester):
         if not content:
             return None
 
-        parser = EuroDCATAPParser()
+        parser = RDFParser()
         # TODO: format
         try:
-            datasets = parser.parse(content)
+            parser.parse(content)
         except RDFParserException, e:
             self._save_gather_error('Error parsing the RDF file: {0}'.format(e), harvest_job)
             return False
 
-        if not datasets:
-            self._save_gather_error('No DCAT datasets could be found', harvest_job)
-            return False
-
         guids_in_source = []
         object_ids = []
-        for dataset in datasets:
+        for dataset in parser.datasets():
             if not dataset.get('name'):
                 dataset['name'] = self._gen_new_name(dataset['title'])
 

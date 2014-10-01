@@ -5,51 +5,81 @@ import sys
 import argparse
 import xml
 import json
+from pkg_resources import iter_entry_points
+
+from pylons import config
 
 import rdflib
 from rdflib.namespace import Namespace, RDF
 
-DCT = Namespace("http://purl.org/dc/terms/")
+
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
-ADMS = Namespace("http://www.w3.org/ns/adms#")
-VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+
+
+RDF_PROFILES_ENTRY_POINT_GROUP = 'ckan.rdf.profiles'
+RDF_PROFILES_CONFIG_OPTION = 'ckanext.dcat.rdf.profiles'
+
+DEFAULT_RDF_PROFILES = ['euro_dcat_ap']
 
 
 class RDFParserException(Exception):
     pass
 
 
+class RDFProfileException(Exception):
+    pass
+
+
 class RDFParser(object):
     '''
-    A base class for RDF parsers based on rdflib
+    An RDF to CKAN parser based on rdflib
 
-    Contains helper functions for parsing the graph
+    Supports different profiles which are the ones that will generate
+    CKAN dicts from the RDF graph.
     '''
 
-    def __init__(self):
+    def __init__(self, profiles=None):
+        '''
+
+        '''
+        if not profiles:
+            profiles = config.get(RDF_PROFILES_CONFIG_OPTION, None)
+            if profiles:
+                profiles = profiles.split(' ')
+            else:
+                profiles = DEFAULT_RDF_PROFILES
+        self._profiles = self._load_profiles(profiles)
+        if not self._profiles:
+            raise RDFProfileException(
+                'No suitable RDF profiles could be loaded')
 
         self.g = rdflib.Graph()
 
-    def _parse_data(self, data, _format=None):
+    def _load_profiles(self, profile_names):
         '''
-        Call the rdflib parse function with the provided data
+        Loads the specified RDF parser profiles
 
-        Data is a string with the serialized RDF graph (eg RDF/XML, N3
-        ... ). By default RF/XML is expected. The optional parameter _format
-        can be used to tell rdflib otherwise.
-
-        If errors where found during parsing, RDFParserException is raised
-
+        These are registered on ``entry_points`` in setup.py, under the
+        ``[ckan.rdf.profiles]`` group.
         '''
-        try:
-            self.g.parse(data=data, format=_format)
-        # Apparently there is no single way of catching exceptions from all
-        # rdflib parsers at once, so if you use a new one and the parsing
-        # exceptions are not cached, add them here.
-        except (SyntaxError, xml.sax.SAXParseException), e:
+        profiles = []
+        loaded_profiles_names = []
 
-            raise RDFParserException(e)
+        for profile in iter_entry_points(group=RDF_PROFILES_ENTRY_POINT_GROUP):
+            if profile.name in profile_names:
+                profile_class = profile.load()
+                # Set a reference to the profile name
+                profile_class.name = profile.name
+                profiles.append(profile_class)
+                loaded_profiles_names.append(profile.name)
+
+        unknown_profiles = set(profile_names) - set(loaded_profiles_names)
+        if unknown_profiles:
+            raise RDFProfileException(
+                'Unknown RDF profiles: {0}'.format(
+                    ', '.join(sorted(unknown_profiles))))
+
+        return profiles
 
     def _datasets(self):
         '''
@@ -61,194 +91,47 @@ class RDFParser(object):
         for dataset in self.g.subjects(RDF.type, DCAT.Dataset):
             yield dataset
 
-    def _distributions(self, dataset):
+    def parse(self, data, _format=None):
         '''
-        Generator that returns all DCAT distributions on a particular dataset
+        Parses and RDF graph serialization and into the class graph
 
-        Yields rdflib.term.URIRef objects that can be used on graph lookups
-        and queries
-        '''
-        for distribution in self.g.objects(dataset, DCAT.distribution):
-            yield distribution
-
-    def _object_value(self, subject, predicate):
-        '''
-        Given a subject and a predicate, returns the value of the object
-
-        Both subject and predicate must be rdflib.term.URIRef objects
-
-        If found, the unicode representation is returned, else None
-        '''
-        for o in self.g.objects(subject, predicate):
-            return unicode(o)
-        return None
-
-    def _object_value_int(self, subject, predicate):
-        '''
-        Given a subject and a predicate, returns the value of the object as an
-        integer
-
-        Both subject and predicate must be rdflib.term.URIRef objects
-
-        If the value can not be parsed as intger, returns None
-        '''
-        object_value = self._object_value(subject, predicate)
-        if object_value:
-            try:
-                return int(object_value)
-            except ValueError:
-                pass
-        return None
-
-    def _object_value_list(self, subject, predicate):
-        '''
-        Given a subject and a predicate, returns a list with all the values of
-        the objects
-
-        Both subject and predicate must be rdflib.term.URIRef objects
-
-        If no values found, returns an empty string
-        '''
-        return [unicode(o) for o in self.g.objects(subject, predicate)]
-
-    def parse(self, data=None, _format=None):
-        '''
-        Parses and RDF graph serialization and returns CKAN dataset dicts
+        It calls the rdflib parse function with the provided data and format.
 
         Data is a string with the serialized RDF graph (eg RDF/XML, N3
         ... ). By default RF/XML is expected. The optional parameter _format
         can be used to tell rdflib otherwise.
 
-        It should raise a RDFParserException if there was some error during
-        the parsing. Calling `self._parse_data()` will handle this for you.
+        It raises a ``RDFParserException`` if there was some error during
+        the parsing.
 
-        If no data is provided it's assumed that the graph property
-        (`g`) has been set directly.
-
-        Different profiles should implement this method and return a list of
-        CKAN dataset dicts (something that can be passed to `package_create`
-        or `package_update`).
-
+        Returns nothing.
         '''
-        raise NotImplementedError
+        try:
+            self.g.parse(data=data, format=_format)
+        # Apparently there is no single way of catching exceptions from all
+        # rdflib parsers at once, so if you use a new one and the parsing
+        # exceptions are not cached, add them here.
+        except (SyntaxError, xml.sax.SAXParseException), e:
 
+            raise RDFParserException(e)
 
-class EuroDCATAPParser(RDFParser):
-    '''
-    An RDF parser based on the DCAT-AP for data portals in Europe
+    def datasets(self):
+        '''
+        Generator that returns CKAN datasets parsed from the RDF graph
 
-    More information and specification:
+        Each dataset is passed to all the loaded profiles before being
+        yielded, so it can be further modified by each one of them.
 
-    https://joinup.ec.europa.eu/asset/dcat_application_profile
+        Returns a dataset dict that can be passed to eg `package_create`
+        or `package_update`
+        '''
+        for dataset_ref in self._datasets():
+            dataset_dict = {}
+            for profile_class in self._profiles:
+                profile = profile_class(self.g)
+                profile.parse_dataset(dataset_dict, dataset_ref)
 
-    '''
-
-    def parse(self, data=None, _format=None):
-
-        if data:
-            self._parse_data(data, _format)
-
-        ckan_datasets = []
-
-        for dataset in self._datasets():
-            ckan_dict = {
-                'tags': [],
-                'extras': [],
-                'resources': []
-            }
-
-            # Basic fields
-            for key, predicate in (
-                    ('title', DCT.title),
-                    ('notes', DCT.description),
-                    ('url', DCAT.landingUrl),
-                    ):
-                value = self._object_value(dataset, predicate)
-                if value:
-                    ckan_dict[key] = value
-
-            # Tags
-
-            keywords = self._object_value_list(dataset, DCAT.keyword) or []
-            for keyword in keywords:
-                ckan_dict['tags'].append({'name': keyword})
-
-            # Extras
-
-            #  Simple values
-            for key, predicate in (
-                    ('dcat_issued', DCT.issued),
-                    ('dcat_modified', DCT.modified),
-                    ('dcat_identifier', DCT.identifier),
-                    ('dcat_alternate_identifier', ADMS.identifier),
-                    ('dcat_version', ADMS.version),
-                    ('dcat_version_notes', ADMS.versionNotes),
-                    ('dcat_frequency', DCT.accrualPeriodicity),
-                    ('dcat_spatial', DCT.spatial),
-                    ('dcat_temporal', DCT.temporal),
-
-                    ):
-                value = self._object_value(dataset, predicate)
-                if value:
-                    ckan_dict['extras'].append({'key': key, 'value': value})
-
-            #  Lists
-            for key, predicate in (
-                    ('language', DCT.language),
-                    ('dcat_theme', DCAT.theme),
-                    ('dcat_conforms_to', DCAT.conformsTo),
-                    ):
-                values = self._object_value_list(dataset, predicate)
-                if values:
-                    ckan_dict['extras'].append({'key': key,
-                                                'value': json.dumps(values)})
-
-            # Dataset URI (explicitly show the missing ones)
-            dataset_uri = (unicode(dataset)
-                           if isinstance(dataset, rdflib.term.URIRef)
-                           else None)
-            ckan_dict['extras'].append({'key': 'uri', 'value': dataset_uri})
-
-            # Resources
-            for distribution in self._distributions(dataset):
-
-                resource_dict = {}
-
-                #  Simple values
-                for key, predicate in (
-                        ('name', DCT.title),
-                        ('description', DCT.description),
-                        ('format', DCT.format),
-                        ('mimetype', DCAT.mediaType),
-                        ('dcat_download_url', DCAT.downloadURL),
-                        ('dcat_issued', DCT.issued),
-                        ('dcat_modified', DCT.modified),
-                        ('dcat_status', ADMS.status),
-                        ('dcat_rights', DCT.rights),
-                        ('dcat_license', DCT.license),
-                        ):
-                    value = self._object_value(distribution, predicate)
-                    if value:
-                        resource_dict[key] = value
-
-                resource_dict['url'] = (self._object_value(distribution, DCAT.accessURL) or
-                                        self._object_value(distribution, DCAT.downloadURL))
-
-                size = self._object_value_int(distribution, DCAT.byteSize)
-                if size is not None:
-                        resource_dict['size'] = size
-
-                # Distribution URI (explicitly show the missing ones)
-                resource_dict['uri'] = (unicode(distribution)
-                                        if isinstance(distribution,
-                                                      rdflib.term.URIRef)
-                                        else None)
-
-                ckan_dict['resources'].append(resource_dict)
-
-            ckan_datasets.append(ckan_dict)
-
-        return ckan_datasets
+            yield dataset_dict
 
 
 if __name__ == '__main__':
@@ -260,16 +143,21 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--format',
                         help='''Serialization format (as understood by rdflib)
                                 eg: xml, n3 ...'). Defaults to \'xml\'.''')
-    parser.add_argument('-p', '--pretty',
+    parser.add_argument('-P', '--pretty',
                         action='store_true',
                         help='Make the output more human readable')
+    parser.add_argument('-p', '--profile', nargs='*',
+                        action='store',
+                        help='RDF Profiles to use, defaults to euro_dcat_ap')
 
     args = parser.parse_args()
 
     contents = args.file.read()
 
-    parser = EuroDCATAPParser()
-    ckan_datasets = parser.parse(contents, _format=args.format)
+    parser = RDFParser(profiles=args.profile)
+    parser.parse(contents, _format=args.format)
+
+    ckan_datasets = [d for d in parser.datasets()]
 
     indent = 4 if args.pretty else None
     print json.dumps(ckan_datasets, indent=indent)

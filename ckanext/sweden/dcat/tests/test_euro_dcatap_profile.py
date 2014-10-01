@@ -6,14 +6,14 @@ import nose
 from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import Namespace, RDF
 
-from ckanext.sweden.dcat.parsers import EuroDCATAPParser
+from ckanext.sweden.dcat.parsers import RDFParser
 
 eq_ = nose.tools.eq_
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
-class TestEuroEuroDCATAPParser(object):
+class TestEuroDCATAPProfile(object):
 
     def _get_file_contents(self, file_name):
         path = os.path.join(os.path.dirname(__file__),
@@ -26,9 +26,11 @@ class TestEuroEuroDCATAPParser(object):
 
         contents = self._get_file_contents('dataset.rdf')
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
-        datasets = p.parse(contents)
+        p.parse(contents)
+
+        datasets = [d for d in p.datasets()]
 
         eq_(len(datasets), 1)
 
@@ -115,11 +117,11 @@ class TestEuroEuroDCATAPParser(object):
         g.add((distribution1_1, DCAT.accessURL, Literal('http://access.url.org')))
         g.add((dataset1, DCAT.distribution, distribution1_1))
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
         p.g = g
 
-        datasets = p.parse()
+        datasets = [d for d in p.datasets()]
 
         resource = datasets[0]['resources'][0]
 
@@ -137,11 +139,11 @@ class TestEuroEuroDCATAPParser(object):
         g.add((distribution1_1, DCAT.downloadURL, Literal('http://download.url.org')))
         g.add((dataset1, DCAT.distribution, distribution1_1))
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
         p.g = g
 
-        datasets = p.parse()
+        datasets = [d for d in p.datasets()]
 
         resource = datasets[0]['resources'][0]
 
@@ -160,11 +162,11 @@ class TestEuroEuroDCATAPParser(object):
         g.add((distribution1_1, DCAT.downloadURL, Literal('http://download.url.org')))
         g.add((dataset1, DCAT.distribution, distribution1_1))
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
         p.g = g
 
-        datasets = p.parse()
+        datasets = [d for d in p.datasets()]
 
         resource = datasets[0]['resources'][0]
 
@@ -175,9 +177,11 @@ class TestEuroEuroDCATAPParser(object):
 
         contents = self._get_file_contents('catalog.rdf')
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
-        datasets = p.parse(contents)
+        p.parse(contents)
+
+        datasets = [d for d in p.datasets()]
 
         eq_(len(datasets), 2)
 
@@ -192,9 +196,11 @@ class TestEuroEuroDCATAPParser(object):
 
         contents = self._get_file_contents('dataset_deri.ttl')
 
-        p = EuroDCATAPParser()
+        p = RDFParser(profiles=['euro_dcat_ap'])
 
-        datasets = p.parse(contents, _format='n3')
+        p.parse(contents, _format='n3')
+
+        datasets = [d for d in p.datasets()]
 
         eq_(len(datasets), 1)
 

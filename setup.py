@@ -29,6 +29,10 @@ setup(
         sweden_theme=ckanext.sweden.theme.plugin:ThemePlugin
         dcat_rdf_harvester=ckanext.sweden.dcat.harvester:RDFDCATHarvester
 
+        [ckan.rdf.profiles]
+        euro_dcat_ap=ckanext.sweden.dcat.profiles:EuropeanDCATAPProfile
+        sweden_dcat_ap=ckanext.sweden.dcat.profiles:SwedishDCATAPProfile
+
         [paste.paster_command]
         sweden_blog_init = ckanext.sweden.blog.commands.blog_init:InitDB
     ''',
