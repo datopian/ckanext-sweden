@@ -66,9 +66,9 @@ class TestEuroDCATAPProfile(object):
         eq_(_get_extra_value('dcat_version_notes'), u'New schema added')
         eq_(_get_extra_value('dcat_temporal_start'), '1905-03-01')
         eq_(_get_extra_value('dcat_temporal_end'), '2013-01-05')
+        eq_(_get_extra_value('dcat_frequency'), 'http://purl.org/cld/freq/daily')
+        eq_(_get_extra_value('spatial_uri'), 'http://publications.europa.eu/mdr/authority/country/ZWE')
 
-        # eq_(_get_extra_value('dcat_frequency'), '')
-        # eq_(_get_extra_value('dcat_spatial'), '')
 
         #  Lists
         eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])

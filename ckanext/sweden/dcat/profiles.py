@@ -167,9 +167,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                 ('dcat_version', ADMS.version),
                 ('dcat_version_notes', ADMS.versionNotes),
                 ('dcat_frequency', DCT.accrualPeriodicity),
-                ('dcat_spatial', DCT.spatial),
-                ('dcat_temporal', DCT.temporal),
-
+                ('spatial_uri', DCT.spatial),
                 ):
             value = self._object_value(dataset_ref, predicate)
             if value:
