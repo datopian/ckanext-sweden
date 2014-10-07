@@ -3,6 +3,7 @@ import json
 import rdflib
 from rdflib.namespace import Namespace, RDF
 
+
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
@@ -19,9 +20,20 @@ class RDFProfile(object):
        custom profiles
     '''
 
-    def __init__(self, graph):
+    def __init__(self, graph, compatibility_mode=False):
+        '''Class constructor
+
+        Graph is an rdflib.Graph instance.
+
+        On compatibility mode, some fields are modified to maintain
+        compatibility with previous versions of the ckanext-dcat parsers
+        (eg adding the `dcat_` prefix or storing comma separated lists instead
+        of JSON dumps.
+        '''
 
         self.g = graph
+
+        self.compatibility_mode = compatibility_mode
 
     def _datasets(self):
         '''
@@ -246,13 +258,13 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         #  Simple values
         for key, predicate in (
-                ('dcat_issued', DCT.issued),
-                ('dcat_modified', DCT.modified),
-                ('dcat_identifier', DCT.identifier),
-                ('dcat_alternate_identifier', ADMS.identifier),
+                ('issued', DCT.issued),
+                ('modified', DCT.modified),
+                ('identifier', DCT.identifier),
+                ('alternate_identifier', ADMS.identifier),
                 ('dcat_version', ADMS.version),
-                ('dcat_version_notes', ADMS.versionNotes),
-                ('dcat_frequency', DCT.accrualPeriodicity),
+                ('version_notes', ADMS.versionNotes),
+                ('frequency', DCT.accrualPeriodicity),
                 ('spatial_uri', DCT.spatial),
                 ):
             value = self._object_value(dataset_ref, predicate)
@@ -262,8 +274,8 @@ class EuropeanDCATAPProfile(RDFProfile):
         #  Lists
         for key, predicate in (
                 ('language', DCT.language),
-                ('dcat_theme', DCAT.theme),
-                ('dcat_conforms_to', DCAT.conformsTo),
+                ('theme', DCAT.theme),
+                ('conforms_to', DCAT.conformsTo),
                 ):
             values = self._object_value_list(dataset_ref, predicate)
             if values:
@@ -275,7 +287,7 @@ class EuropeanDCATAPProfile(RDFProfile):
         for key in ('uri', 'name', 'email'):
             if contact.get(key):
                 dataset_dict['extras'].append(
-                    {'key': 'dcat_contact_{0}'.format(key),
+                    {'key': 'contact_{0}'.format(key),
                      'value': contact.get(key)})
 
         # Publisher
@@ -283,17 +295,17 @@ class EuropeanDCATAPProfile(RDFProfile):
         for key in ('uri', 'name', 'email', 'url', 'type'):
             if publisher.get(key):
                 dataset_dict['extras'].append(
-                    {'key': 'dcat_publisher_{0}'.format(key),
+                    {'key': 'publisher_{0}'.format(key),
                      'value': publisher.get(key)})
 
         # Temporal
         start, end = self._time_interval(dataset_ref, DCT.temporal)
         if start:
             dataset_dict['extras'].append(
-                {'key': 'dcat_temporal_start', 'value': start})
+                {'key': 'temporal_start', 'value': start})
         if end:
             dataset_dict['extras'].append(
-                {'key': 'dcat_temporal_end', 'value': end})
+                {'key': 'temporal_end', 'value': end})
 
         # Dataset URI (explicitly show the missing ones)
         dataset_uri = (unicode(dataset_ref)
@@ -312,12 +324,12 @@ class EuropeanDCATAPProfile(RDFProfile):
                     ('description', DCT.description),
                     ('format', DCT.format),
                     ('mimetype', DCAT.mediaType),
-                    ('dcat_download_url', DCAT.downloadURL),
-                    ('dcat_issued', DCT.issued),
-                    ('dcat_modified', DCT.modified),
-                    ('dcat_status', ADMS.status),
-                    ('dcat_rights', DCT.rights),
-                    ('dcat_license', DCT.license),
+                    ('download_url', DCAT.downloadURL),
+                    ('issued', DCT.issued),
+                    ('modified', DCT.modified),
+                    ('status', ADMS.status),
+                    ('rights', DCT.rights),
+                    ('license', DCT.license),
                     ):
                 value = self._object_value(distribution, predicate)
                 if value:
@@ -339,6 +351,18 @@ class EuropeanDCATAPProfile(RDFProfile):
                                     else None)
 
             dataset_dict['resources'].append(resource_dict)
+
+        if self.compatibility_mode:
+            # Tweak the resulting dict to make it compatible with previous
+            # versions of the ckanext-dcat parsers
+            for extra in dataset_dict['extras']:
+                if extra['key'] in ('issued', 'modified', 'publisher_name',
+                                    'publisher_email',):
+
+                    extra['key'] = 'dcat_' + extra['key']
+
+                if extra['key'] == 'language':
+                    extra['value'] = ','.join(sorted(json.loads(extra['value'])))
 
         return dataset_dict
 

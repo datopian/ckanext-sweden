@@ -12,12 +12,14 @@ from pylons import config
 import rdflib
 from rdflib.namespace import Namespace, RDF
 
+import ckan.plugins as p
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
 RDF_PROFILES_ENTRY_POINT_GROUP = 'ckan.rdf.profiles'
 RDF_PROFILES_CONFIG_OPTION = 'ckanext.dcat.rdf.profiles'
+COMPAT_MODE_CONFIG_OPTION = 'ckanext.dcat.compatibility_mode'
 
 DEFAULT_RDF_PROFILES = ['euro_dcat_ap']
 
@@ -38,7 +40,7 @@ class RDFParser(object):
     CKAN dicts from the RDF graph.
     '''
 
-    def __init__(self, profiles=None):
+    def __init__(self, profiles=None, compatibility_mode=False):
         '''
 
         '''
@@ -52,6 +54,11 @@ class RDFParser(object):
         if not self._profiles:
             raise RDFProfileException(
                 'No suitable RDF profiles could be loaded')
+
+        if not compatibility_mode:
+            compatibility_mode = p.toolkit.asbool(
+                config.get(COMPAT_MODE_CONFIG_OPTION, False))
+        self.compatibility_mode = compatibility_mode
 
         self.g = rdflib.Graph()
 
@@ -128,7 +135,7 @@ class RDFParser(object):
         for dataset_ref in self._datasets():
             dataset_dict = {}
             for profile_class in self._profiles:
-                profile = profile_class(self.g)
+                profile = profile_class(self.g, self.compatibility_mode)
                 profile.parse_dataset(dataset_dict, dataset_ref)
 
             yield dataset_dict
@@ -149,12 +156,16 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--profile', nargs='*',
                         action='store',
                         help='RDF Profiles to use, defaults to euro_dcat_ap')
+    parser.add_argument('-m', '--compat-mode',
+                        action='store_true',
+                        help='Enable compatibility mode')
 
     args = parser.parse_args()
 
     contents = args.file.read()
 
-    parser = RDFParser(profiles=args.profile)
+    parser = RDFParser(profiles=args.profile,
+                       compatibility_mode=args.compat_mode)
     parser.parse(contents, _format=args.format)
 
     ckan_datasets = [d for d in parser.datasets()]
