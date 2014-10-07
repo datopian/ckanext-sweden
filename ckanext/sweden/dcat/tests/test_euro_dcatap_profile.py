@@ -73,6 +73,8 @@ class TestEuroDCATAPProfile(object):
         eq_(_get_extra_value('dcat_publisher_email'), 'contact@some.org')
         eq_(_get_extra_value('dcat_publisher_url'), 'http://some.org')
         eq_(_get_extra_value('dcat_publisher_type'), 'http://purl.org/adms/publishertype/NonProfitOrganisation')
+        eq_(_get_extra_value('dcat_contact_name'), 'Point of Contact')
+        eq_(_get_extra_value('dcat_contact_email'), 'mailto:contact@some.org')
 
         #  Lists
         eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])

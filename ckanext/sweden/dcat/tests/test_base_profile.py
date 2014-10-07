@@ -13,6 +13,7 @@ eq_ = nose.tools.eq_
 DCT = Namespace("http://purl.org/dc/terms/")
 TEST = Namespace("http://test.org/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
+ADMS = Namespace("http://www.w3.org/ns/adms#")
 
 
 class TestBaseRDFProfile(object):
@@ -228,7 +229,6 @@ class TestBaseRDFProfile(object):
         eq_(publisher['url'], 'http://some.org')
         eq_(publisher['type'], 'http://purl.org/adms/publishertype/NonProfitOrganisation')
 
-
     def test_publisher_ref(self):
 
         data = '''<?xml version="1.0" encoding="utf-8" ?>
@@ -251,3 +251,34 @@ class TestBaseRDFProfile(object):
         publisher = p._publisher(URIRef('http://example.org'), DCT.publisher)
 
         eq_(publisher['uri'], 'http://orgs.vocab.org/some-org')
+
+    def test_contact_details(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+         xmlns:adms="http://www.w3.org/ns/adms#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+          <adms:contactPoint>
+            <vcard:Organization>
+              <vcard:fn>Point of Contact</vcard:fn>
+              <vcard:hasEmail rdf:resource="mailto:contact@some.org"/>
+            </vcard:Organization>
+          </adms:contactPoint>
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        g = Graph()
+
+        g.parse(data=data)
+
+        p = RDFProfile(g)
+
+        contact = p._contact_details(URIRef('http://example.org'), ADMS.contactPoint)
+
+        eq_(contact['name'], 'Point of Contact')
+        eq_(contact['email'], 'mailto:contact@some.org')

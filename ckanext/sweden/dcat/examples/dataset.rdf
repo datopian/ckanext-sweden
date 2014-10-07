@@ -6,6 +6,7 @@
 	xmlns:foaf="http://xmlns.com/foaf/0.1/"
     xmlns:adms="http://www.w3.org/ns/adms#"
     xmlns:schema="http://schema.org/"
+	xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -39,6 +40,12 @@
             <schema:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2013-01-05</schema:endDate>
         </dct:PeriodOfTime>
     </dct:temporal>
+    <adms:contactPoint>
+      <vcard:Organization>
+        <vcard:fn>Point of Contact</vcard:fn>
+        <vcard:hasEmail rdf:resource="mailto:contact@some.org"/>
+      </vcard:Organization>
+    </adms:contactPoint>
     <dct:publisher>
         <foaf:Organization rdf:about="http://orgs.vocab.org/some-org">
             <foaf:name>Publishing Organization for dataset 1</foaf:name>

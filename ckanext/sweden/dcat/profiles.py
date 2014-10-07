@@ -187,6 +187,29 @@ class RDFProfile(object):
 
         return publisher
 
+    def _contact_details(self, subject, predicate):
+        '''
+        Returns a dict with details about a vcard expression
+
+        Both subject and predicate must be rdflib URIRef or BNode objects
+
+        Returns keys for uri, name and email with the values set to
+        None if they could not be found
+        '''
+
+        contact = {}
+
+        for agent in self.g.objects(subject, predicate):
+
+            contact['uri'] = (str(agent) if isinstance(agent,
+                              rdflib.term.URIRef) else None)
+
+            contact['name'] = self._object_value(agent, VCARD.fn)
+
+            contact['email'] = self._object_value(agent, VCARD.hasEmail)
+
+        return contact
+
 
 class EuropeanDCATAPProfile(RDFProfile):
     '''
@@ -215,7 +238,6 @@ class EuropeanDCATAPProfile(RDFProfile):
                 dataset_dict[key] = value
 
         # Tags
-
         keywords = self._object_value_list(dataset_ref, DCAT.keyword) or []
         for keyword in keywords:
             dataset_dict['tags'].append({'name': keyword})
@@ -248,6 +270,15 @@ class EuropeanDCATAPProfile(RDFProfile):
                 dataset_dict['extras'].append({'key': key,
                                                'value': json.dumps(values)})
 
+        # Contact details
+        contact = self._contact_details(dataset_ref, ADMS.contactPoint)
+        for key in ('uri', 'name', 'email'):
+            if contact.get(key):
+                dataset_dict['extras'].append(
+                    {'key': 'dcat_contact_{0}'.format(key),
+                     'value': contact.get(key)})
+
+        # Publisher
         publisher = self._publisher(dataset_ref, DCT.publisher)
         for key in ('uri', 'name', 'email', 'url', 'type'):
             if publisher.get(key):
@@ -255,6 +286,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                     {'key': 'dcat_publisher_{0}'.format(key),
                      'value': publisher.get(key)})
 
+        # Temporal
         start, end = self._time_interval(dataset_ref, DCT.temporal)
         if start:
             dataset_dict['extras'].append(
