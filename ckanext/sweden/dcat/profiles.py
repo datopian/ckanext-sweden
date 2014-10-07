@@ -43,6 +43,18 @@ class RDFProfile(object):
         for distribution in self.g.objects(dataset, DCAT.distribution):
             yield distribution
 
+    def _object(self, subject, predicate):
+        '''
+        Helper for returning the first object for this subject and predicate
+
+        Both subject and predicate must be rdflib URIRef or BNode objects
+
+        Returns an rdflib reference (URIRef or BNode) or None if not found
+        '''
+        for _object in self.g.objects(subject, predicate):
+            return _object
+        return None
+
     def _object_value(self, subject, predicate):
         '''
         Given a subject and a predicate, returns the value of the object
@@ -87,7 +99,7 @@ class RDFProfile(object):
         '''
         Returns the start and end date for a time interval object
 
-        Both subject and predicate must be rdflib URIRef or BNode  objects
+        Both subject and predicate must be rdflib URIRef or BNode objects
 
         It checks for time intervals defined with both schema.org startDate &
         endDate and W3C Time hasBeginning & hasEnd.
@@ -122,6 +134,58 @@ class RDFProfile(object):
                                               TIME.inXSDDateTime)
 
         return start_date, end_date
+
+    def _publisher(self, subject, predicate):
+        '''
+        Returns a dict with details about a dct:publisher entity, a foaf:Agent
+
+        Both subject and predicate must be rdflib URIRef or BNode objects
+
+        Examples:
+
+        <dct:publisher>
+            <foaf:Organization rdf:about="http://orgs.vocab.org/some-org">
+                <foaf:name>Publishing Organization for dataset 1</foaf:name>
+                <foaf:mbox>contact@some.org</foaf:mbox>
+                <foaf:homepage>http://some.org</foaf:homepage>
+                <dct:type rdf:resource="http://purl.org/adms/publishertype/NonProfitOrganisation"/>
+            </foaf:Organization>
+        </dct:publisher>
+
+        {
+            'uri': 'http://orgs.vocab.org/some-org',
+            'name': 'Publishing Organization for dataset 1',
+            'email': 'contact@some.org',
+            'url': 'http://some.org',
+            'type': 'http://purl.org/adms/publishertype/NonProfitOrganisation',
+        }
+
+        <dct:publisher rdf:resource="http://publications.europa.eu/resource/authority/corporate-body/EURCOU" />
+
+        {
+            'uri': 'http://publications.europa.eu/resource/authority/corporate-body/EURCOU'
+        }
+
+        Returns keys for uri, name, email, url and type with the values set to
+        None if they could not be found
+        '''
+
+        publisher = {}
+
+        for agent in self.g.objects(subject, predicate):
+
+            publisher['uri'] = (str(agent) if isinstance(agent,
+                                rdflib.term.URIRef) else None)
+
+            publisher['name'] = self._object_value(agent, FOAF.name)
+
+            publisher['email'] = self._object_value(agent, FOAF.mbox)
+
+            publisher['url'] = self._object_value(agent, FOAF.homepage)
+
+            publisher['type'] = self._object_value(agent, DCT.type)
+
+        return publisher
 
 
 class EuropeanDCATAPProfile(RDFProfile):
@@ -182,14 +246,22 @@ class EuropeanDCATAPProfile(RDFProfile):
             values = self._object_value_list(dataset_ref, predicate)
             if values:
                 dataset_dict['extras'].append({'key': key,
-                                            'value': json.dumps(values)})
+                                               'value': json.dumps(values)})
+
+        publisher = self._publisher(dataset_ref, DCT.publisher)
+        for key in ('uri', 'name', 'email', 'url', 'type'):
+            if publisher.get(key):
+                dataset_dict['extras'].append(
+                    {'key': 'dcat_publisher_{0}'.format(key),
+                     'value': publisher.get(key)})
 
         start, end = self._time_interval(dataset_ref, DCT.temporal)
         if start:
-            dataset_dict['extras'].append({'key': 'dcat_temporal_start', 'value': start})
+            dataset_dict['extras'].append(
+                {'key': 'dcat_temporal_start', 'value': start})
         if end:
-            dataset_dict['extras'].append({'key': 'dcat_temporal_end', 'value': end})
-
+            dataset_dict['extras'].append(
+                {'key': 'dcat_temporal_end', 'value': end})
 
         # Dataset URI (explicitly show the missing ones)
         dataset_uri = (unicode(dataset_ref)
@@ -219,8 +291,10 @@ class EuropeanDCATAPProfile(RDFProfile):
                 if value:
                     resource_dict[key] = value
 
-            resource_dict['url'] = (self._object_value(distribution, DCAT.accessURL) or
-                                    self._object_value(distribution, DCAT.downloadURL))
+            resource_dict['url'] = (self._object_value(distribution,
+                                                       DCAT.accessURL) or
+                                    self._object_value(distribution,
+                                                       DCAT.downloadURL))
 
             size = self._object_value_int(distribution, DCAT.byteSize)
             if size is not None:

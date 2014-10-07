@@ -192,3 +192,62 @@ class TestBaseRDFProfile(object):
 
         eq_(start, '1904-01-01')
         eq_(end, '2014-03-22')
+
+    def test_publisher_foaf(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+          <dct:publisher>
+            <foaf:Organization rdf:about="http://orgs.vocab.org/some-org">
+              <foaf:name>Publishing Organization for dataset 1</foaf:name>
+              <foaf:mbox>contact@some.org</foaf:mbox>
+              <foaf:homepage>http://some.org</foaf:homepage>
+              <dct:type rdf:resource="http://purl.org/adms/publishertype/NonProfitOrganisation"/>
+            </foaf:Organization>
+          </dct:publisher>
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        g = Graph()
+
+        g.parse(data=data)
+
+        p = RDFProfile(g)
+
+        publisher = p._publisher(URIRef('http://example.org'), DCT.publisher)
+
+        eq_(publisher['uri'], 'http://orgs.vocab.org/some-org')
+        eq_(publisher['name'], 'Publishing Organization for dataset 1')
+        eq_(publisher['email'], 'contact@some.org')
+        eq_(publisher['url'], 'http://some.org')
+        eq_(publisher['type'], 'http://purl.org/adms/publishertype/NonProfitOrganisation')
+
+
+    def test_publisher_ref(self):
+
+        data = '''<?xml version="1.0" encoding="utf-8" ?>
+        <rdf:RDF
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+        <rdfs:SomeClass rdf:about="http://example.org">
+          <dct:publisher rdf:resource="http://orgs.vocab.org/some-org" />
+        </rdfs:SomeClass>
+        </rdf:RDF>
+        '''
+
+        g = Graph()
+
+        g.parse(data=data)
+
+        p = RDFProfile(g)
+
+        publisher = p._publisher(URIRef('http://example.org'), DCT.publisher)
+
+        eq_(publisher['uri'], 'http://orgs.vocab.org/some-org')

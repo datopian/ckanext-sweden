@@ -68,7 +68,11 @@ class TestEuroDCATAPProfile(object):
         eq_(_get_extra_value('dcat_temporal_end'), '2013-01-05')
         eq_(_get_extra_value('dcat_frequency'), 'http://purl.org/cld/freq/daily')
         eq_(_get_extra_value('spatial_uri'), 'http://publications.europa.eu/mdr/authority/country/ZWE')
-
+        eq_(_get_extra_value('dcat_publisher_uri'), 'http://orgs.vocab.org/some-org')
+        eq_(_get_extra_value('dcat_publisher_name'), 'Publishing Organization for dataset 1')
+        eq_(_get_extra_value('dcat_publisher_email'), 'contact@some.org')
+        eq_(_get_extra_value('dcat_publisher_url'), 'http://some.org')
+        eq_(_get_extra_value('dcat_publisher_type'), 'http://purl.org/adms/publishertype/NonProfitOrganisation')
 
         #  Lists
         eq_(sorted(_get_extra_value_as_list('language')), [u'ca', u'en' , u'es'])

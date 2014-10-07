@@ -40,9 +40,11 @@
         </dct:PeriodOfTime>
     </dct:temporal>
     <dct:publisher>
-        <foaf:Organization>
+        <foaf:Organization rdf:about="http://orgs.vocab.org/some-org">
             <foaf:name>Publishing Organization for dataset 1</foaf:name>
             <foaf:mbox>contact@some.org</foaf:mbox>
+            <foaf:homepage>http://some.org</foaf:homepage>
+            <dct:type rdf:resource="http://purl.org/adms/publishertype/NonProfitOrganisation"/>
         </foaf:Organization>
     </dct:publisher>
     <dcat:distribution>
