@@ -1,1 +1,1 @@
-!function(n){n.module("homepage-cols",function(n){return{initialize:function(){n(".span4 .box",this.el).matchHeight()}}})}(window.ckan);
+!function(i){i.module("homepage-cols",function(i){function t(){var e=!1,n=1==i("iframe.twitter-timeline",this.el).length;if(n){var o=i("iframe.twitter-timeline",this.el);if(o.outerHeight()>0){var h=i(".span4 .box:first",this.el).outerHeight()-80;o.css("height",h),e=!0}}e||setTimeout(t,200)}return{initialize:function(){i(".span4 .box",this.el).matchHeight(),t()}}})}(window.ckan);
