@@ -1,12 +1,16 @@
+from collections import defaultdict
+
 import nose
 import httpretty
 
+import ckan.plugins as p
 import ckan.new_tests.helpers as h
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
 from ckanext.sweden.dcat.harvester import RDFDCATHarvester
+from ckanext.sweden.dcat.interfaces import IRDFDCATHarvester
 
 
 eq_ = nose.tools.eq_
@@ -34,6 +38,35 @@ def _patched_get_content(self, url, harvest_job, page=1):
 RDFDCATHarvester._get_content = _patched_get_content
 
 # End monkey-patch
+
+
+class TestRDFHarvester(p.SingletonPlugin):
+
+    p.implements(IRDFDCATHarvester)
+
+    calls = defaultdict(int)
+
+    def before_download(self, url, harvest_job):
+
+        self.calls['before_download'] += 1
+
+        if url == 'http://return.none':
+            return None, []
+        elif url == 'http://return.errors':
+            return None, ['Error 1', 'Error 2']
+        else:
+            return url, []
+
+    def after_download(self, content, harvest_job):
+
+        self.calls['after_download'] += 1
+
+        if content == 'return.empty.content':
+            return None, []
+        elif content == 'return.errors':
+            return None, ['Error 1', 'Error 2']
+        else:
+            return content, []
 
 
 class TestDCATHarvestUnit(object):
@@ -105,7 +138,7 @@ class TestDCATHarvestUnit(object):
         eq_(guid, None)
 
 
-class TestDCATHarvestFunctional(object):
+class FunctionalHarvestTest(object):
 
     @classmethod
     def setup_class(cls):
@@ -149,7 +182,7 @@ class TestDCATHarvestFunctional(object):
     def teardown(cls):
         h.reset_db()
 
-    def _create_harvest_source(self):
+    def _create_harvest_source(self, **kwargs):
 
         source_dict = {
             'title': 'Test RDF DCAT Source',
@@ -157,6 +190,8 @@ class TestDCATHarvestFunctional(object):
             'url': self.mock_url,
             'source_type': 'dcat_rdf',
         }
+
+        source_dict.update(**kwargs)
 
         harvest_source = h.call_action('harvest_source_create',
                                        {}, **source_dict)
@@ -222,6 +257,9 @@ class TestDCATHarvestFunctional(object):
 
         # Handle the fetch queue
         self._fetch_queue(num_objects)
+
+
+class TestDCATHarvestFunctional(FunctionalHarvestTest):
 
     def test_harvest_create(self):
 
@@ -336,14 +374,13 @@ class TestDCATHarvestFunctional(object):
 
         eq_(results['results'][0]['title'], 'Example dataset 1')
 
-
     def test_harvest_bad_format(self):
 
         bad_format_file = '''<?xml version="1.0" encoding="utf-8" ?>
         <rdf:RDF
          xmlns:dcat="http://www.w3.org/ns/dcat#"
          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-        <dcat:Catalog 
+        <dcat:Catalog
         </rdf:RDF>
         '''
 
@@ -373,3 +410,245 @@ class TestDCATHarvestFunctional(object):
         eq_(last_job_status['status'], 'Finished')
         assert ('Error parsing the RDF file'
                 in last_job_status['gather_error_summary'][0][0])
+
+
+class TestDCATHarvestFunctionalExtensionPoints(FunctionalHarvestTest):
+
+    @classmethod
+    def setup_class(self):
+
+        super(TestDCATHarvestFunctionalExtensionPoints, self).setup_class()
+
+        p.load('test_rdf_harvester')
+
+    @classmethod
+    def teardown_class(self):
+
+        p.unload('test_rdf_harvester')
+
+    def setup(self):
+
+        super(TestDCATHarvestFunctionalExtensionPoints, self).setup()
+
+        plugin = p.get_plugin('test_rdf_harvester')
+        plugin.calls = defaultdict(int)
+
+    def teardown(self):
+
+        super(TestDCATHarvestFunctionalExtensionPoints, self).teardown()
+
+        plugin = p.get_plugin('test_rdf_harvester')
+        plugin.calls = defaultdict(int)
+
+    def test_harvest_before_download_extension_point_gets_called(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        harvest_source = self._create_harvest_source()
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['before_download'], 1)
+
+    def test_harvest_before_download_null_url_stops_gather_stage(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        source_url = 'http://return.none'
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, source_url,
+                               body=self.remote_file)
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, source_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source(url=source_url)
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['before_download'], 1)
+
+        # Run the jobs to mark the previous one as Finished
+        self._run_jobs()
+
+        # Check that the file was not requested
+        assert 'return.none' not in httpretty.last_request().headers['host']
+
+        # Get the harvest source with the udpated status
+        harvest_source = h.call_action('harvest_source_show',
+                                       id=harvest_source['id'])
+
+        last_job_status = harvest_source['status']['last_job']
+
+        eq_(last_job_status['status'], 'Finished')
+
+        # We would expect two datasets created, so if no stats we assume the
+        # gather stage was stopped
+
+        eq_(last_job_status['stats'], {})
+
+    def test_harvest_before_download_errors_get_stored(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        source_url = 'http://return.errors'
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, source_url,
+                               body=self.remote_file)
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, source_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source(url=source_url)
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['before_download'], 1)
+
+        # Run the jobs to mark the previous one as Finished
+        self._run_jobs()
+
+        # Check that the file was not requested
+        assert 'return.errors' not in httpretty.last_request().headers['host']
+
+        # Get the harvest source with the udpated status
+        harvest_source = h.call_action('harvest_source_show',
+                                       id=harvest_source['id'])
+
+        last_job_status = harvest_source['status']['last_job']
+
+        eq_('Error 1', last_job_status['gather_error_summary'][0][0])
+        eq_('Error 2', last_job_status['gather_error_summary'][1][0])
+
+    def test_harvest_after_download_extension_point_gets_called(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, self.mock_url)
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, self.mock_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source()
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['after_download'], 1)
+
+    def test_harvest_after_download_empty_content_stops_gather_stage(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        source_url = 'http://return.empty.content'
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, source_url,
+                               body='return.empty.content')
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, source_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source(url=source_url)
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['after_download'], 1)
+
+        # Run the jobs to mark the previous one as Finished
+        self._run_jobs()
+
+        # Check that the file was requested
+        assert ('return.empty.content'
+                in httpretty.last_request().headers['host'])
+
+        # Get the harvest source with the udpated status
+        harvest_source = h.call_action('harvest_source_show',
+                                       id=harvest_source['id'])
+
+        last_job_status = harvest_source['status']['last_job']
+
+        eq_(last_job_status['status'], 'Finished')
+
+        # We would expect two datasets created, so if no stats we assume the
+        # gather stage was stopped
+
+        eq_(last_job_status['stats'], {})
+
+    def test_harvest_after_download_errors_get_stored(self):
+
+        plugin = p.get_plugin('test_rdf_harvester')
+
+        source_url = 'http://return.content.errors'
+
+        # Mock the GET request to get the file
+        httpretty.register_uri(httpretty.GET, source_url,
+                               body='return.errors')
+
+        # The harvester will try to do a HEAD request first so we need to mock
+        # this as well
+        httpretty.register_uri(httpretty.HEAD, source_url,
+                               status=405)
+
+        harvest_source = self._create_harvest_source(url=source_url)
+        self._create_harvest_job(harvest_source['id'])
+        self._run_jobs(harvest_source['id'])
+        self._gather_queue(1)
+
+        eq_(plugin.calls['after_download'], 1)
+
+        # Run the jobs to mark the previous one as Finished
+        self._run_jobs()
+
+        # Check that the file was requested
+        assert ('return.content.errors'
+                in httpretty.last_request().headers['host'])
+
+        # Get the harvest source with the udpated status
+        harvest_source = h.call_action('harvest_source_show',
+                                       id=harvest_source['id'])
+
+        last_job_status = harvest_source['status']['last_job']
+
+        eq_('Error 1', last_job_status['gather_error_summary'][0][0])
+        eq_('Error 2', last_job_status['gather_error_summary'][1][0])
+
+
+class TestIRDFDCATHarvester(object):
+
+    def test_before_download(self):
+
+        i = IRDFDCATHarvester()
+
+        url = 'http://some.url'
+
+        values = i.before_download(url, {})
+
+        eq_(values[0], url)
+        eq_(values[1], [])
+
+    def test_after_download(self):
+
+        i = IRDFDCATHarvester()
+
+        content = 'some.content'
+
+        values = i.after_download(content, {})
+
+        eq_(values[0], content)
+        eq_(values[1], [])

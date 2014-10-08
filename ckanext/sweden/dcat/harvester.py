@@ -12,6 +12,8 @@ from ckanext.dcat.harvesters import DCATHarvester
 
 from ckanext.sweden.dcat.parsers import RDFParserException, RDFParser
 
+from ckanext.sweden.dcat.interfaces import IRDFDCATHarvester
+
 
 log = logging.getLogger(__name__)
 
@@ -132,15 +134,33 @@ class RDFDCATHarvester(DCATHarvester):
         # Get file contents
         url = harvest_job.source.url
 
+        for harvester in p.PluginImplementations(IRDFDCATHarvester):
+            url, before_download_errors = harvester.before_download(url, harvest_job)
+
+            for error_msg in before_download_errors:
+                self._save_gather_error(error_msg, harvest_job)
+
+            if not url:
+                return False
+
         content = self._get_content(url, harvest_job, 1)
 
-        # TODO: store content?
-
         if not content:
-            return None
+            return False
 
+        # TODO: store content?
+        for harvester in p.PluginImplementations(IRDFDCATHarvester):
+            content, after_download_errors = harvester.after_download(content, harvest_job)
+
+            for error_msg in after_download_errors:
+                self._save_gather_error(error_msg, harvest_job)
+
+            if not content:
+                return False
+
+        # TODO: profiles conf
         parser = RDFParser()
-        # TODO: format
+        # TODO: format conf
         try:
             parser.parse(content)
         except RDFParserException, e:
