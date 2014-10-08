@@ -29,6 +29,8 @@ setup(
         sweden_theme=ckanext.sweden.theme.plugin:ThemePlugin
         dcat_rdf_harvester=ckanext.sweden.dcat.harvester:RDFDCATHarvester
 
+        sweden_dcat_rdf_harvester=ckanext.sweden.dcat.plugin:SwedenDCATRDFHarvester
+
         # Test plugins
         test_rdf_harvester=ckanext.sweden.dcat.tests.test_harvester:TestRDFHarvester
 
