@@ -5,7 +5,7 @@ def _get_datasets(sort):
   context = {'model': model, 'session': model.Session,
              'user': p.toolkit.c.user, 'for_view': True,
              'auth_user_obj': p.toolkit.c.userobj}
-  data_dict = {'rows': 3, 'start': 0, 'sort': sort}
+  data_dict = {'fq': 'dataset_type:dataset', 'rows': 3, 'start': 0, 'sort': sort}
   query = p.toolkit.get_action('package_search')(context, data_dict)
   if (query['results']):
     return query['results']
