@@ -42,6 +42,25 @@ class TestBaseRDFProfile(object):
             elif str(dataset) == 'http://example.org/datasets/3':
                 eq_(len([d for d in p._distributions(dataset)]), 0)
 
+    def test_object(self):
+
+        p = RDFProfile(_default_graph())
+
+        _object = p._object(URIRef('http://example.org/datasets/1'),
+                            DCT.title)
+
+        assert isinstance(_object, Literal)
+        eq_(str(_object), 'Test Dataset 1')
+
+    def test_object_not_found(self):
+
+        p = RDFProfile(_default_graph())
+
+        _object = p._object(URIRef('http://example.org/datasets/1'),
+                            DCT.unknown_property)
+
+        eq_(_object, None)
+
     def test_object_value(self):
 
         p = RDFProfile(_default_graph())
