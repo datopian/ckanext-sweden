@@ -2,7 +2,7 @@ import os
 
 import nose
 
-from ckanext.sweden.dcat.parsers import RDFParser
+from ckanext.dcat.parsers import RDFParser
 
 eq_ = nose.tools.eq_
 

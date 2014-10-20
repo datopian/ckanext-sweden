@@ -27,15 +27,9 @@ setup(
         # Add plugins here, e.g.
         sweden_blog=ckanext.sweden.blog.plugin:BlogPlugin
         sweden_theme=ckanext.sweden.theme.plugin:ThemePlugin
-        dcat_rdf_harvester=ckanext.sweden.dcat.harvester:RDFDCATHarvester
-
         sweden_dcat_rdf_harvester=ckanext.sweden.dcat.plugin:SwedenDCATRDFHarvester
 
-        # Test plugins
-        test_rdf_harvester=ckanext.sweden.dcat.tests.test_harvester:TestRDFHarvester
-
         [ckan.rdf.profiles]
-        euro_dcat_ap=ckanext.sweden.dcat.profiles:EuropeanDCATAPProfile
         sweden_dcat_ap=ckanext.sweden.dcat.profiles:SwedishDCATAPProfile
 
         [paste.paster_command]

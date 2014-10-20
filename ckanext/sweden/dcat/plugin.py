@@ -2,7 +2,7 @@ import requests
 
 import ckan.plugins as p
 
-from ckanext.sweden.dcat.interfaces import IRDFDCATHarvester
+from ckanext.dcat.interfaces import IDCATRDFHarvester
 
 
 VALIDATION_SERVICE = 'http://validator.dcat-editor.com/service'
@@ -10,7 +10,7 @@ VALIDATION_SERVICE = 'http://validator.dcat-editor.com/service'
 
 class SwedenDCATRDFHarvester(p.SingletonPlugin):
 
-    p.implements(IRDFDCATHarvester, inherit=True)
+    p.implements(IDCATRDFHarvester, inherit=True)
 
     def after_download(self, content, harvest_job):
 
