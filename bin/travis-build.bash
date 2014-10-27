@@ -24,6 +24,16 @@ cd ckan
 paster db init -c test-core.ini
 cd -
 
+echo "Installing ckanext-dcat"
+git clone https://github.com/ckan/ckanext-dcat
+cd ckanext-dcat
+# tmp
+pip install lxml
+pip install rdflib
+python setup.py develop
+cd -
+
+
 echo "Installing ckanext-sweden and its requirements..."
 python setup.py develop
 pip install -r ckanext/sweden/blog/requirements.txt
