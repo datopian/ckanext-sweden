@@ -45,13 +45,10 @@ To enable, activate your CKAN virtual environment and then:
 
     git clone https://github.com/ckan/ckanext-dcat
     cd ckanext-dcat
+    pip install -r requirements.txt
     # tmp
     pip install lxml
     python setup.py develop
-
-4. Install the dcat plugin's requirements:
-
-        pip install -r ckanext/sweden/dcat/requirements.txt
 
 5. Add `harvest`  and `dcat_rdf_harvester` to `ckan.plugins`.
 
@@ -59,6 +56,19 @@ To enable, activate your CKAN virtual environment and then:
 
 You should see the harvest pages at `/harvest` and `Generic DCAT RDF Harvester`
 listed as a type on `/harvest/new`.
+
+### Configuration options
+
+The following configuration options can be used with regards to the validation
+of remote DCAT documents:
+
+* `ckanext.sweden.harvest.use_validation` (default: `True`): Whether to use validation at all
+* `ckanext.sweden.harvest.validation_service` (default: `http://validator.dcat-editor.com/service`): The
+   URL of the validation service to use. The harvester will POST the contents of the remote DCAT file
+   to this endpoint.
+* `ckanext.sweden.harvest.stop_on_validation_errors` (default `False`): Whether to stop the datasets import
+   if validation errors were found.
+
 
 Theme
 -----
