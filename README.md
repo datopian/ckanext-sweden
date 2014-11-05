@@ -35,24 +35,20 @@ To enable, activate your CKAN virtual environment and then:
 
 2. Install `ckanext-harvest`:
 
-        ```
         git clone https://github.com/ckan/ckanext-harvest
         cd ckanext-harvest
         git checkout stable
         pip install -r pip-requirements.txt
         python setup.py develop
-        ```
 
 3. Install `ckanext-dcat`:
 
-        ```
         git clone https://github.com/ckan/ckanext-dcat
         cd ckanext-dcat
         pip install -r requirements.txt
         # tmp
         pip install lxml
         python setup.py develop
-        ```
 
 5. Add `harvest`  and `dcat_rdf_harvester` to `ckan.plugins`.
 
