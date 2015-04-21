@@ -31,11 +31,11 @@ To enable, activate your CKAN virtual environment and then:
 
 1. Install Redis, gcc and libffi-dev:
 
-    sudo apt-get install redis-server build-essential libffi-dev
+        sudo apt-get install redis-server build-essential libffi-dev
 
 2. Install sweden_dcat_rdf_harvester requirements
 
-    pip install -r ckanext/sweden/dcat/requirements.txt
+        pip install -r ckanext/sweden/dcat/requirements.txt
 
 3. Install `ckanext-harvest`:
 
