@@ -61,9 +61,9 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
                     for error in resource.get('errors', []):
                         msg = 'Error in resource {uri} (type {type}): {path}, {reason}'
                         code = error.get('code')
-                        if code == 1:
+                        if code == 1 or 'few':
                             reason = 'Too few values'
-                        elif code == 2:
+                        elif code == 2 or 'many':
                             reason = 'Too many values'
                         else:
                             reason = ''
