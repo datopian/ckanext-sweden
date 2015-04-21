@@ -91,6 +91,15 @@ To modify the theme of the ckanext-sweden theme you'll need to:
 4. Once you've made your changes make sure you commit the changes in
    `./ckanext/theme/resources`
 
+
+Eurovoc categories
+------------------
+
+Eurovoc categories can be added to the dataset schema by installing `ckanext-eurovoc`.
+
+    pip install ckanext-eurovoc
+
+
 Tests
 -----
 
