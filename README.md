@@ -29,11 +29,15 @@ DCAT Harvesting
 
 To enable, activate your CKAN virtual environment and then:
 
-1. Install Redis:
+1. Install Redis, gcc and libffi-dev:
 
-    sudo apt-get install redis-server
+    sudo apt-get install redis-server build-essential libffi-dev
 
-2. Install `ckanext-harvest`:
+2. Install sweden_dcat_rdf_harvester requirements
+
+    pip install -r ckanext/sweden/dcat/requirements.txt
+
+3. Install `ckanext-harvest`:
 
         git clone https://github.com/ckan/ckanext-harvest
         cd ckanext-harvest
@@ -41,7 +45,7 @@ To enable, activate your CKAN virtual environment and then:
         pip install -r pip-requirements.txt
         python setup.py develop
 
-3. Install `ckanext-dcat`:
+4. Install `ckanext-dcat`:
 
         git clone https://github.com/ckan/ckanext-dcat
         cd ckanext-dcat
@@ -50,7 +54,7 @@ To enable, activate your CKAN virtual environment and then:
         pip install lxml
         python setup.py develop
 
-5. Add `harvest`  and `dcat_rdf_harvester` to `ckan.plugins`.
+5. Add `harvest`, `dcat_rdf_harvester` and `sweden_dcat_rdf_harvester` to `ckan.plugins`.
 
 6. Restart CKAN.
 

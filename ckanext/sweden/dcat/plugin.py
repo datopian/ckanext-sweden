@@ -7,7 +7,7 @@ import ckan.plugins as p
 from ckanext.dcat.interfaces import IDCATRDFHarvester
 
 
-VALIDATION_SERVICE = 'http://validator.dcat-editor.com/service'
+VALIDATION_SERVICE = 'https://validator.dcat-editor.com/service'
 
 
 class SwedenDCATRDFHarvester(p.SingletonPlugin):
