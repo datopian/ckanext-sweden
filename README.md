@@ -54,7 +54,8 @@ To enable, activate your CKAN virtual environment and then:
         pip install lxml
         python setup.py develop
 
-5. Add `harvest`, `dcat_rdf_harvester` and `sweden_dcat_rdf_harvester` to `ckan.plugins`.
+5. Add `dcat_rdf_harvester sweden_dcat_rdf_harvester harvest` to `ckan.plugins`
+   ensuring `harvest` is listed after `sweden_dcat_rdf_harvester`
 
 6. Restart CKAN.
 
