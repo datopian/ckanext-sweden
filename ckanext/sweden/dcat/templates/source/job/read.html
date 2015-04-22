@@ -7,14 +7,14 @@
       <td rowspan={{ loop.length }}>{{ validation_error.type}}</td>
       <td rowspan={{ loop.length }}>{{ validation_error.template }}</td>
       <td rowspan={{ loop.length }}>{{ validation_error.uri }}</td>
-      <td rowspan={{ loop.length }}>{{ severity }}</td>
-      <td>Too {{ err.code }} values</td>
+      <td rowspan={{ loop.length }}>{{ severity[:-1] }}</td>
       <td>{{ err.path }}</td>
+      <td>Too {{ err.code }} values</td>
     </tr>
     {% else %}
     <tr>
-      <td>Too {{ err.code }} values</td>
       <td>{{ err.path }}</td>
+      <td>Too {{ err.code }} values</td>
     </tr>
     {% endif %}
   {% endfor %}
