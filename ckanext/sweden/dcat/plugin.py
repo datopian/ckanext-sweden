@@ -5,6 +5,7 @@ from pylons import config
 import ckan.plugins as p
 
 from ckanext.dcat.interfaces import IDCATRDFHarvester
+from ckanext.sweden.dcat import template_helpers
 
 
 VALIDATION_SERVICE = 'https://validator.dcat-editor.com/service'
@@ -13,6 +14,8 @@ VALIDATION_SERVICE = 'https://validator.dcat-editor.com/service'
 class SwedenDCATRDFHarvester(p.SingletonPlugin):
 
     p.implements(IDCATRDFHarvester, inherit=True)
+    p.implements(p.IConfigurer)
+    p.implements(p.ITemplateHelpers)
 
     def after_download(self, content, harvest_job):
 
@@ -59,12 +62,7 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
                         errors.append('Mandatory class {0} missing'.format(_class))
                 for resource in response.get('resources', []):
                     for error in resource.get('errors', []):
-                        msg = ('Validation Error\n'
-                               'severity: error\n'
-                               'class: {uri}\n'
-                               'type {type}\n'
-                               'property in graph: {path}\n'
-                               'problem: {reason}')
+                        msg = '[error][{uri}][{type}] {reason} for {path}'
                         code = error.get('code')
                         if code == 1 or 'few':
                             reason = 'Too few values'
@@ -83,3 +81,13 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
                 return None, errors
             else:
                 return content, errors
+
+    # IConfigurer
+    def update_config(self, config):
+        p.toolkit.add_template_directory(config, 'templates')
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            'json_loads': template_helpers.json_loads,
+        }
