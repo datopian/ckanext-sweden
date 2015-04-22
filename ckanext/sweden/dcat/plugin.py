@@ -1,3 +1,4 @@
+import json
 import requests
 
 from pylons import config
@@ -60,22 +61,9 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
                 if response.get('mandatoryError'):
                     for _class in response['mandatoryError']:
                         errors.append('Mandatory class {0} missing'.format(_class))
-                for resource in response.get('resources', []):
-                    for error in resource.get('errors', []):
-                        msg = '[error][{uri}][{type}] {reason} for {path}'
-                        code = error.get('code')
-                        if code == 1 or 'few':
-                            reason = 'Too few values'
-                        elif code == 2 or 'many':
-                            reason = 'Too many values'
-                        else:
-                            reason = ''
 
-                        errors.append(msg.format(
-                            uri=resource.get('uri'),
-                            type=resource.get('type'),
-                            path=error.get('path'),
-                            reason=reason))
+                for resource in response.get('resources', []):
+                    errors.append(json.dumps(resource))
 
             if stop_on_errors:
                 return None, errors
