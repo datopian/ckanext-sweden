@@ -59,7 +59,12 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
                         errors.append('Mandatory class {0} missing'.format(_class))
                 for resource in response.get('resources', []):
                     for error in resource.get('errors', []):
-                        msg = 'Error in resource {uri} (type {type}): {path}, {reason}'
+                        msg = ('Validation Error\n'
+                               'severity: error\n'
+                               'class: {uri}\n'
+                               'type {type}\n'
+                               'property in graph: {path}\n'
+                               'problem: {reason}')
                         code = error.get('code')
                         if code == 1 or 'few':
                             reason = 'Too few values'
