@@ -28,6 +28,7 @@ setup(
         sweden_blog=ckanext.sweden.blog.plugin:BlogPlugin
         sweden_theme=ckanext.sweden.theme.plugin:ThemePlugin
         sweden_dcat_rdf_harvester=ckanext.sweden.dcat.plugin:SwedenDCATRDFHarvester
+        sweden=ckanext.sweden.plugin:SwedenPlugin
 
         [ckan.rdf.profiles]
         sweden_dcat_ap=ckanext.sweden.dcat.profiles:SwedishDCATAPProfile

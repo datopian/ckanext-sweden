@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block extras scoped %}
+  {% if pkg_dict[h.eurovoc_category_field_name()] %}
+    <tr>
+      <th scope="row" class="dataset-label">{{ _("Eurovoc") }}</th>
+      <td class="dataset-details">{{ h.eurovoc_category_label(pkg_dict[h.eurovoc_category_field_name()]) }}</td>
+    </tr>
+  {% endif %}
+  {{ super() }}
+{% endblock %}
