@@ -110,6 +110,17 @@ To enable Eurovoc categories:
    `ckan.plugins`.
 
 
+Hide 'Groups'
+-------------
+
+Groups aren't used and can be hidden with the [ckanext-
+hidegroups](https://github.com/okfn/ckanext-hidegroups) extension::
+
+    pip install -e 'git+git://github.com/okfn/ckanext-hidegroups.git#egg=ckanext-hidegroups'
+
+Then add ``hidegroups`` to ``ckan.plugins``.
+
+
 Tests
 -----
 
