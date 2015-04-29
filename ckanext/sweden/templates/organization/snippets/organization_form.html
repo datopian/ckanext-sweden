@@ -1,0 +1,8 @@
+{% ckan_extends %}
+
+{% import 'macros/form.html' as form %}
+
+{% block basic_fields %}
+  {{ super() }}
+  {{ form.input('uri', label=_('URI'), id='field-uri', value=data.uri, error=errors.uri, classes=['control-medium']) }}
+{% endblock %}
