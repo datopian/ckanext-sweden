@@ -21,7 +21,7 @@ class SwedenPlugin(plugins.SingletonPlugin):
         Take the URI value for `theme` populated by dcat, transform it into a
         Eurovoc category label, and use it as the value for eurovoc category.
         '''
-        theme_dict = next((i for i in pkg_dict.get('extras', None)
+        theme_dict = next((i for i in pkg_dict.get('extras', [])
                            if i['key'] == 'theme'), {})
         theme = theme_dict.get('value', None)
         if theme is not None:
