@@ -5,9 +5,12 @@ import ckan.plugins.toolkit as toolkit
 from ckan.lib.plugins import DefaultOrganizationForm
 from ckan.logic.schema import default_group_schema, default_update_group_schema
 
+import ckanext.sweden.actions
+
 
 class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
 
+    plugins.implements(plugins.IActions)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets)
@@ -92,7 +95,6 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         return schema
 
     def db_to_form_schema(self):
-
         # Import core converters and validators
         _convert_from_extras = plugins.toolkit.get_converter('convert_from_extras')
         _ignore_missing = plugins.toolkit.get_validator('ignore_missing')
@@ -109,3 +111,12 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         })
 
         return schema
+
+    # IActions
+
+    def get_actions(self):
+        action_functions = {
+            'dcat_organization_list':
+                ckanext.sweden.actions.dcat_organization_list,
+        }
+        return action_functions
