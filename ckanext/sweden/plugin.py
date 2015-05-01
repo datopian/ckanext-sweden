@@ -11,6 +11,7 @@ import ckanext.sweden.actions
 class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
 
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets)
@@ -20,6 +21,17 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
 
     def update_config(self, config):
         toolkit.add_template_directory(config, 'templates')
+
+    # IRoutes
+    def before_map(self, _map):
+
+        controller = 'ckanext.sweden.controllers:DCATController'
+
+        _map.connect('dcat_organization', '/organization/{_id}/dcat.{_format}',
+                     controller=controller, action='read_organization',
+                     requirements={'_format': 'xml|rdf|n3|ttl'})
+
+        return _map
 
     # IPackageController
 
