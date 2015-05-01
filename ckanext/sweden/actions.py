@@ -36,8 +36,12 @@ def dcat_organization_list(context, data_dict):
         uri = next((i['value'] for i in extras if i['key'] == 'uri'), '')
         dcat_org_data.update({'uri': uri})
 
-        # set dcat_validation and dcat_metadata_url
-        dcat_org_data.update({'dcat_validation': '', 'dcat_metadata_url': ''})
+        # set dcat_metadata_url
+        dcat_org_data.update(
+            {'dcat_metadata_url': toolkit.url_for('dcat_organization',
+                                                  _id=org['name'],
+                                                  _format='rdf',
+                                                  qualified=True)})
 
         dcat_org_list.append(dcat_org_data)
 
