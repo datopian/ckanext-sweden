@@ -14,7 +14,6 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         dcat_org_list = helpers.call_action('dcat_organization_list')
         nosetools.assert_equal(dcat_org_list, [])
 
-    @helpers.change_config('ckan.site_id', 'test_id')
     def test_dcat_organization_list_has_keys(self):
         '''
         dcat_organization_list action returns list with the correct keys.
@@ -33,7 +32,6 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         nosetools.assert_true('dcat_validation' in org)
         nosetools.assert_true('dcat_metadata_url' in org)
 
-    @helpers.change_config('ckan.site_id', 'test_id')
     def test_dcat_organization_list_org_has_correct_values(self):
         '''
         dcat_organization_list action returns list of one result with correct
@@ -46,12 +44,12 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         dcat_org_list = helpers.call_action('dcat_organization_list')
 
         nosetools.assert_equal(len(dcat_org_list), 1)
-        org = dcat_org_list[0]
-        nosetools.assert_equal(org['id'], 'test_id')
-        nosetools.assert_equal(org['original_dcat_metadata_url'], u'http://example.com/source')
-        nosetools.assert_equal(org['uri'], u'http://example.com/uri')
-        nosetools.assert_equal(org['dcat_validation'], '')
-        nosetools.assert_equal(org['dcat_metadata_url'], '')
+        dcat_org = dcat_org_list[0]
+        nosetools.assert_equal(dcat_org['id'], org['id'])
+        nosetools.assert_equal(dcat_org['original_dcat_metadata_url'], u'http://example.com/source')
+        nosetools.assert_equal(dcat_org['uri'], u'http://example.com/uri')
+        nosetools.assert_equal(dcat_org['dcat_validation'], '')
+        nosetools.assert_equal(dcat_org['dcat_metadata_url'], '')
 
     def test_dcat_organization_list_no_orgs_without_harvest_pair(self):
         '''

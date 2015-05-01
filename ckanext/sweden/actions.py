@@ -1,5 +1,3 @@
-from pylons import config
-
 import ckan.plugins.toolkit as toolkit
 
 
@@ -10,8 +8,6 @@ def dcat_organization_list(context, data_dict):
     Return an array of objects (one per CKAN organization).
     '''
 
-    ckan_id = config.get('ckan.site_id', '')
-
     data_dict = {
         'all_fields': True,
         'include_extras': True
@@ -21,7 +17,7 @@ def dcat_organization_list(context, data_dict):
 
     dcat_org_list = []
     for org in organizations:
-        dcat_org_data = {'id': ckan_id}
+        dcat_org_data = {'id': org['id']}
 
         # set original_dcat_metadata_url
         harvest_dict = {
