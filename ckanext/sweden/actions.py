@@ -1,3 +1,4 @@
+from pylons import config
 import ckan.plugins.toolkit as toolkit
 
 
@@ -37,11 +38,11 @@ def dcat_organization_list(context, data_dict):
         dcat_org_data.update({'uri': uri})
 
         # set dcat_metadata_url
-        dcat_org_data.update(
-            {'dcat_metadata_url': toolkit.url_for('dcat_organization',
-                                                  _id=org['name'],
-                                                  _format='rdf',
-                                                  qualified=True)})
+        dcat_metadata_url = (config.get('ckan.site_url').rstrip('/') +
+                             toolkit.url_for('dcat_organization',
+                                             _id=org['name'],
+                                             _format='rdf'))
+        dcat_org_data.update({'dcat_metadata_url': dcat_metadata_url})
 
         dcat_org_list.append(dcat_org_data)
 

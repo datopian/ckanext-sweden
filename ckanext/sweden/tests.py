@@ -1,7 +1,12 @@
+from pylons import config
 from nose import tools as nosetools
-
-import ckan.tests.factories as factories
-import ckan.tests.helpers as helpers
+try:
+    import ckan.tests.factories as factories
+    import ckan.tests.helpers as helpers
+except ImportError:
+    # CKAN 2.3
+    import ckan.new_tests.factories as factories
+    import ckan.new_tests.helpers as helpers
 
 
 class TestDcatOrganizationList(helpers.FunctionalTestBase):
@@ -29,7 +34,6 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         nosetools.assert_true('uri' in org)
         nosetools.assert_true('original_dcat_metadata_url' in org)
         nosetools.assert_true('id' in org)
-        nosetools.assert_true('dcat_validation' in org)
         nosetools.assert_true('dcat_metadata_url' in org)
 
     def test_dcat_organization_list_org_has_correct_values(self):
@@ -48,8 +52,10 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         nosetools.assert_equal(dcat_org['id'], org['id'])
         nosetools.assert_equal(dcat_org['original_dcat_metadata_url'], u'http://example.com/source')
         nosetools.assert_equal(dcat_org['uri'], u'http://example.com/uri')
-        nosetools.assert_equal(dcat_org['dcat_validation'], '')
-        nosetools.assert_equal(dcat_org['dcat_metadata_url'], '')
+        nosetools.assert_equal(dcat_org['dcat_metadata_url'],
+                               '{0}/organization/{1}/dcat.rdf'.format(
+                                   config.get('ckan.site_url').rstrip('/'),
+                                   org['name']))
 
     def test_dcat_organization_list_no_orgs_without_harvest_pair(self):
         '''
