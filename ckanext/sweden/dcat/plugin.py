@@ -29,7 +29,7 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
 
         errors = []
         try:
-            r = requests.post(validation_service, data=content, verify=False)
+            r = requests.post(validation_service, data=content)
         except requests.exceptions.RequestException, e:
             errors.append('Error contacting the validation service: {0}'.format(str(e)))
 
