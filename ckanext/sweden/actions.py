@@ -22,7 +22,13 @@ def dcat_organization_list(context, data_dict):
 
     dcat_org_list = []
     for org in organizations:
-        dcat_org_data = {'id': org['id']}
+        dcat_org_data = {
+            'id': org['id'],
+            'dcat_validation': "{host}{path}".format(
+                host=config.get('ckan.site_url').rstrip('/'),
+                path=toolkit.url_for('dcat_validation',
+                                     _id=org['name']))
+        }
 
         # set original_dcat_metadata_url
         harvest_list = _harvest_list_for_org(context, org['id'])
