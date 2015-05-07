@@ -62,7 +62,8 @@ def dcat_validation(context, data_dict):
 
     harvest_list = _harvest_list_for_org(context, id)
     if harvest_list:
-        harvest_source_id = harvest_list[0].get('id', '')
+        harvest_package = harvest_list[0]
+        harvest_source_id = harvest_package.get('id', '')
         source_status = toolkit.get_action('harvest_source_show_status')(context=context,
                                                                          data_dict={'id': harvest_source_id})
         last_job = source_status.get('last_job', None)
@@ -70,17 +71,37 @@ def dcat_validation(context, data_dict):
             last_job_report = toolkit.get_action('harvest_job_report')(context=context,
                                                                        data_dict={'id': last_job['id']})
 
+        return_obj = {
+            'url': harvest_package['url'],
+            'last_validation': last_job['gather_finished']
+        }
+
         gather_errors = last_job_report.get('gather_errors', [])
         gather_errors_list = []
+        error_count = 0
+        warning_count = 0
         for error in gather_errors:
             try:
                 message = json.loads(error.get('message'))
             except ValueError:
                 message = error.get('message', '')
+            else:
+                if message.get('errors') and type(message.get('errors')) is list:
+                    error_count += len(message.get('errors'))
+                if message.get('warnings') and type(message.get('warnings')) is list:
+                    warning_count += len(message.get('warnings'))
 
             gather_errors_list.append(message)
 
-        return gather_errors_list
+        result_obj = {
+            'errors': error_count,
+            'warnings': warning_count,
+            'resources': gather_errors_list
+        }
+
+        return_obj['result'] = result_obj
+
+        return return_obj
     else:
         return None
 
