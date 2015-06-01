@@ -1,12 +1,12 @@
 (function(ckan) {
   ckan.module('homepage-cols', function($, _) {
-    function ResizeIframe () {
+    function ResizeIframe (el) {
       var resized = false;
-      var check = ( $('iframe.twitter-timeline', this.el).length == 1 );
+      var check = ( $('iframe.twitter-timeline', el).length == 1 );
       if (check) {
-        var iframe = $('iframe.twitter-timeline', this.el);
+        var iframe = $('iframe.twitter-timeline', el);
         if (iframe.outerHeight() > 0) {
-          var height = $('.span4 .box:first', this.el).outerHeight()-80;
+          var height = $('.span4 .box:first', el).outerHeight()-80;
           iframe.css('height', height);
           resized = true;
         }
@@ -17,8 +17,8 @@
     }
     return {
       initialize: function () {
-        $('.span4 .box', this.el).matchHeight();
-        ResizeIframe();
+        $(this.el.find('.span4 .box'), this.el).matchHeight();
+        ResizeIframe(this.el);
       }
     };
   });
