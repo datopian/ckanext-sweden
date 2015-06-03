@@ -30,6 +30,10 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         _map.connect('dcat_organization', '/organization/{_id}/dcat.{_format}',
                      controller=controller, action='read_organization',
                      requirements={'_format': 'xml|rdf|n3|ttl'})
+        _map.connect('dcat_validation',
+                     '/organization/{_id}/dcat_validation.json',
+                     controller=controller,
+                     action='organization_dcat_validation')
 
         return _map
 
