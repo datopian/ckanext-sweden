@@ -11,6 +11,7 @@ import ckanext.sweden.actions
 class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
 
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IPackageController, inherit=True)
@@ -138,3 +139,17 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
                 ckanext.sweden.actions.dcat_validation,
         }
         return action_functions
+
+    # IAuthFunctions
+
+    def get_auth_functions(self):
+        auth_functions = {
+            'dcat_organization_list': dcat_auth,
+            'dcat_validation': dcat_auth,
+        }
+        return auth_functions
+
+
+@toolkit.auth_allow_anonymous_access
+def dcat_auth(context, data_dict):
+    return {'success': True}

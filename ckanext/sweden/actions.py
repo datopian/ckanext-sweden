@@ -13,6 +13,8 @@ def dcat_organization_list(context, data_dict):
     Return an array of objects (one per CKAN organization).
     '''
 
+    toolkit.check_access('dcat_organization_list', context, data_dict)
+
     data_dict = {
         'all_fields': True,
         'include_extras': True
@@ -60,6 +62,9 @@ def dcat_validation(context, data_dict):
     Return the validation errors for the last harvest job of the organization
     harvest source.
     '''
+
+    toolkit.check_access('dcat_validation', context, data_dict)
+
     org_id = toolkit.get_or_bust(data_dict, 'id')
     try:
         id = converters.convert_group_name_or_id_to_id(org_id, context)
@@ -74,7 +79,8 @@ def dcat_validation(context, data_dict):
                                                                          data_dict={'id': harvest_source_id})
         last_job = source_status.get('last_job', None)
         if last_job:
-            last_job_report = toolkit.get_action('harvest_job_report')(context=context,
+
+            last_job_report = toolkit.get_action('harvest_job_report')(context={'ignore_auth': True},
                                                                        data_dict={'id': last_job['id']})
 
         return_obj = {
