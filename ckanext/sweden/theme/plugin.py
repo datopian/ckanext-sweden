@@ -1,6 +1,8 @@
 import ckan.plugins as p
 from ckan import model
 
+import helpers
+
 
 def _get_datasets(sort):
     context = {'model': model, 'session': model.Session,
@@ -47,10 +49,15 @@ class ThemePlugin(p.SingletonPlugin):
 
     def get_helpers(self):
         return {
-          'get_most_viewed_datasets': get_most_viewed_datasets,
-          'get_recently_updated_datasets': get_recently_updated_datasets,
-          'get_top_groups': get_top_groups,
-          'get_recent_blog_posts': get_recent_blog_posts
+            'get_most_viewed_datasets': get_most_viewed_datasets,
+            'get_recently_updated_datasets': get_recently_updated_datasets,
+            'get_top_groups': get_top_groups,
+            'get_recent_blog_posts': get_recent_blog_posts,
+            'get_weekly_new_dataset_totals':
+                helpers.get_weekly_new_dataset_totals,
+            'get_weekly_dataset_activity': helpers.get_weekly_dataset_activity,
+            'get_weekly_dataset_activity_new':
+                helpers.get_weekly_dataset_activity_new
         }
 
     def update_config(self, config):

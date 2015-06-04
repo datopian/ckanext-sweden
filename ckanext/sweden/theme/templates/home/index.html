@@ -8,6 +8,13 @@
   </div>
   <div role="main" class="boxes">
     <div class="container">
+      <div class="row">
+        {% snippet 'home/snippets/stats_vis.html' %}
+      </div>
+    </div>
+  </div>
+  <div role="main" class="boxes">
+    <div class="container">
       <div class="row" data-module="homepage-cols">
         <div class="span4">
           {% snippet 'home/snippets/most_viewed.html' %}
@@ -31,5 +38,8 @@
 {% block scripts %}
   {{ super() }}
   {% resource 'theme/scripts/jquery.matchHeight.js' %}
+  {% resource 'theme/scripts/jquery.flot.js' %}
+  {% resource 'theme/scripts/jquery.flot.time.js' %}
   {% resource 'theme/scripts/homepage-cols.js' %}
+  {% resource 'theme/scripts/homepage-stats.js' %}
 {% endblock %}
