@@ -26,11 +26,19 @@ def dcat_organization_list(context, data_dict):
     for org in organizations:
         dcat_org_data = {
             'id': org['id'],
-            'dcat_validation': "{host}{path}".format(
+            'dcat_validation_result': "{host}{path}".format(
                 host=config.get('ckan.site_url').rstrip('/'),
                 path=toolkit.url_for('dcat_validation',
-                                     _id=org['name']))
+                                     _id=org['name'])),
+            'dcat_validation': None,
+            'dcat_validation_date': None,
         }
+
+        dcat_validation = toolkit.get_action('dcat_validation')(context,
+                                                                {'id': org['id']})
+        if dcat_validation:
+            dcat_org_data['dcat_validation'] = dcat_validation['result']['errors'] == 0
+            dcat_org_data['dcat_validation_date'] = dcat_validation['last_validation']
 
         # set original_dcat_metadata_url
         harvest_list = _harvest_list_for_org(context, org['id'])
