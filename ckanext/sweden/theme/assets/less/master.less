@@ -235,7 +235,7 @@ a {
   }
   .boxes {
     background-color: @bg;
-    .box {
+    .box, .spark {
       background: @bg-dark;
       border-width: 0;
       .border-radius(0);
@@ -248,6 +248,9 @@ a {
       .inner {
         padding: @unit;
       }
+    }
+    .spark {
+      background: none;
     }
   }
   .dataset-item {

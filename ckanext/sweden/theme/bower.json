@@ -6,6 +6,7 @@
   "dependencies": {
     "open-sans-fontface": "1.1.x",
     "bootstrap": "2.3.x",
-    "matchHeight": "0.5.x"
+    "matchHeight": "0.5.x",
+    "flot": "0.8.3"
   }
 }

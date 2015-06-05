@@ -12,6 +12,8 @@ var paths = {
     images: './assets/images/**/*',
     scripts: [
       './bower_components/matchHeight/jquery.matchHeight.js',
+      './bower_components/flot/jquery.flot.js',
+      './bower_components/flot/jquery.flot.time.js',
       './assets/scripts/**/*'
     ],
     fonts: './bower_components/open-sans-fontface/fonts/**/*'

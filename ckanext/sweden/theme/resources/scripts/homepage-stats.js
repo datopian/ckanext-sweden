@@ -1,0 +1,1 @@
+!function(i){i.module("homepage-stats",function(i){return{options:{rawdata:[],xaxis:{},yaxis:{},legend:{position:"nw"},colors:["#ffcc33","#ff8844"],grid:{show:!1},series:{lines:{show:!0,lineWidth:1},shadowSize:0}},initialize:function(){var o=this.options.rawdata;i.plot(this.el.find(".demo-placeholder"),o,this.options)}}})}(window.ckan);
