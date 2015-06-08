@@ -83,8 +83,8 @@ class TestWeeklyTotalsHelpers(helpers.FunctionalTestBase):
 
         # 1 in w/c 19 jan 2015
         nosetools.assert_equal(weekly_totals[1][0], 1421625600000)
-        nosetools.assert_equal(weekly_totals[1][1], 3)
+        nosetools.assert_equal(weekly_totals[1][1], 1)
 
         # 4 in w/c 9 feb 2015
         nosetools.assert_equal(weekly_totals[2][0], 1423440000000)
-        nosetools.assert_equal(weekly_totals[2][1], 7)
+        nosetools.assert_equal(weekly_totals[2][1], 4)
