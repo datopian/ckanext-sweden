@@ -44,7 +44,7 @@ def get_package_revisions():
 
 
 def get_weekly_new_dataset_totals(timestamp=True):
-    '''For each week, return the cumulative total of datasets.'''
+    '''For each week, return the cumulative total number of datasets.'''
     new_datasets = get_new_datasets()
 
     return _weekly_totals(new_datasets, timestamp=timestamp, cumulative=True)
