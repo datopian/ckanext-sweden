@@ -50,7 +50,8 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
         nosetools.assert_equal(len(dcat_org_list), 1)
         dcat_org = dcat_org_list[0]
         nosetools.assert_equal(dcat_org['id'], org['id'])
-        nosetools.assert_equal(dcat_org['original_dcat_metadata_url'], u'http://example.com/source')
+        nosetools.assert_equal(dcat_org['original_dcat_metadata_url'],
+                               u'http://example.com/source')
         nosetools.assert_equal(dcat_org['uri'], u'http://example.com/uri')
         nosetools.assert_equal(dcat_org['dcat_metadata_url'],
                                '{0}/organization/{1}/dcat.rdf'.format(

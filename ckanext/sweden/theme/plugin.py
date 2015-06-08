@@ -46,6 +46,7 @@ class ThemePlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IConfigurable, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=False)
+    p.implements(p.IActions)
 
     def get_helpers(self):
         return {
