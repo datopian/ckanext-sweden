@@ -1,3 +1,5 @@
+import json
+
 import ckan.plugins.toolkit as toolkit
 
 from ckanext.dcat.utils import CONTENT_TYPES
@@ -24,3 +26,14 @@ class DCATController(toolkit.BaseController):
             return toolkit.get_action('dcat_catalog_search')({}, data_dict)
         except toolkit.ValidationError, e:
             toolkit.abort(409, str(e))
+
+    def organization_dcat_validation(self, _id):
+        try:
+            dcat_validation_dict = \
+                toolkit.get_action('dcat_validation')({}, {'id': _id})
+        except toolkit.ObjectNotFound:
+            toolkit.abort(404, toolkit._('Organization not found'))
+
+        toolkit.response.headers.update({'Content-type': 'application/json'})
+
+        return json.dumps(dcat_validation_dict)

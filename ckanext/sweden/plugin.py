@@ -3,7 +3,6 @@ import json
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.plugins import DefaultOrganizationForm
-from ckan.logic.schema import default_group_schema, default_update_group_schema
 
 import ckanext.sweden.actions
 
@@ -11,6 +10,7 @@ import ckanext.sweden.actions
 class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
 
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IPackageController, inherit=True)
@@ -30,6 +30,10 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         _map.connect('dcat_organization', '/organization/{_id}/dcat.{_format}',
                      controller=controller, action='read_organization',
                      requirements={'_format': 'xml|rdf|n3|ttl'})
+        _map.connect('dcat_validation',
+                     '/organization/{_id}/dcat_validation.json',
+                     controller=controller,
+                     action='organization_dcat_validation')
 
         return _map
 
@@ -61,7 +65,8 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         facets_dict = self._update_facets(facets_dict)
         return facets_dict
 
-    def organization_facets(self, facets_dict, organization_type, package_type):
+    def organization_facets(self, facets_dict, organization_type,
+                            package_type):
         facets_dict = self._update_facets(facets_dict)
         return facets_dict
 
@@ -95,27 +100,29 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
     def form_to_db_schema(self):
         # Import core converters and validators
         _convert_to_extras = plugins.toolkit.get_converter('convert_to_extras')
-        _ignore_missing = plugins.toolkit.get_validator('ignore_missing')
         _url_validator = plugins.toolkit.get_validator('url_validator')
+        _not_empty = plugins.toolkit.get_validator('not_empty')
 
-        schema = default_update_group_schema()
+        schema = super(SwedenPlugin, self).form_to_db_schema()
 
         schema.update({
-            'uri': [_ignore_missing, _url_validator, _convert_to_extras, unicode],
+            'url': [_not_empty, _strip_backslash, _url_validator,
+                    _unique_org_url, _convert_to_extras, unicode],
         })
 
         return schema
 
     def db_to_form_schema(self):
         # Import core converters and validators
-        _convert_from_extras = plugins.toolkit.get_converter('convert_from_extras')
+        _convert_from_extras = plugins.toolkit.get_converter(
+            'convert_from_extras')
         _ignore_missing = plugins.toolkit.get_validator('ignore_missing')
         _not_empty = plugins.toolkit.get_validator('not_empty')
 
-        schema = default_group_schema()
+        schema = super(SwedenPlugin, self).form_to_db_schema()
 
         schema.update({
-            'uri': [_convert_from_extras, _ignore_missing],
+            'url': [_convert_from_extras, _ignore_missing],
             # TODO: this should be handled in core
             'num_followers': [_not_empty],
             'package_count': [_not_empty],
@@ -130,5 +137,54 @@ class SwedenPlugin(plugins.SingletonPlugin, DefaultOrganizationForm):
         action_functions = {
             'dcat_organization_list':
                 ckanext.sweden.actions.dcat_organization_list,
+            'dcat_validation':
+                ckanext.sweden.actions.dcat_validation,
         }
         return action_functions
+
+    # IAuthFunctions
+
+    def get_auth_functions(self):
+        auth_functions = {
+            'dcat_organization_list': dcat_auth,
+            'dcat_validation': dcat_auth,
+        }
+        return auth_functions
+
+
+# Auth functions
+
+@toolkit.auth_allow_anonymous_access
+def dcat_auth(context, data_dict):
+    return {'success': True}
+
+
+# Validators
+
+def _unique_org_url(key, data, errors, context):
+
+    value = data[key]
+
+    model = context['model']
+
+    q = model.Session.query(model.GroupExtra) \
+             .filter(model.GroupExtra.key == 'url') \
+             .filter(model.GroupExtra.value == value)
+
+    org_id = data.get(('id',), '')
+    org = model.Group.get(org_id)
+
+    if org:
+        q = q.filter(model.GroupExtra.group_id != org.id)
+
+    count = q.count()
+
+    if count:
+        raise toolkit.Invalid(toolkit._(
+            'There already is an organization with this URL: {0}'.format(
+                data[key])))
+
+
+def _strip_backslash(value, context):
+
+    return value.rstrip('/')
