@@ -35,5 +35,8 @@ setup(
 
         [paste.paster_command]
         sweden_blog_init = ckanext.sweden.blog.commands.blog_init:InitDB
+
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
     ''',
 )
