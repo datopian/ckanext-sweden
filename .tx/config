@@ -1,8 +1,9 @@
 [main]
 host = https://www.transifex.com
 
-[ckanext-sweden.ckanext-sweden.pot]
+[ckanext-sweden.ckanext-swedenpot]
 file_filter = i18n/<lang>/LC_MESSAGES/ckanext-sweden.po
 source_file = i18n/ckanext-sweden.pot
 source_lang = en
 type = PO
+
