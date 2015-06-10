@@ -53,7 +53,7 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
         else:
             response = r.json()
 
-            if not all([response.get('rdfError'),
+            if not any([response.get('rdfError'),
                         response.get('errors'),
                         response.get('warnings')]):
                 # All clear
