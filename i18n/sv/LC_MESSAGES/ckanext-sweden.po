@@ -239,7 +239,7 @@ msgstr ""
 
 #: ckanext/sweden/theme/templates/home/snippets/recently_updated.html:4
 msgid "Recently updated datasets"
-msgstr ""
+msgstr "test please work"
 
 #: ckanext/sweden/theme/templates/home/snippets/search.html:2
 #: ckanext/sweden/theme/templates/home/snippets/search.html:5

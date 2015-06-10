@@ -12,8 +12,10 @@ def blog_admin(context, data_dict=None):
     except toolkit.ObjectNotFound:
         # The blogadmins group doesn't exist.
         return {'success': False,
-                'msg': "The blogadmins groups doesn't exist, so only sysadmins "
-                       "are authorized to administrate the blog."}
+                'msg': toolkit._(
+                    "The blogadmins groups doesn't exist, so only sysadmins "
+                   "are authorized to administrate the blog.")
+                }
 
     # 'members' is a list of (user_id, object_type, capacity) tuples, we're
     # only interested in the user_ids.
@@ -27,12 +29,16 @@ def blog_admin(context, data_dict=None):
     except toolkit.Invalid:
         # The user doesn't exist (e.g. they're not logged-in).
         return {'success': False,
-                'msg': 'You must be logged-in as a member of the blogadmins '
-                       'group to administrate the blog.'}
+                'msg': toolkit._(
+                    'You must be logged-in as a member of the blogadmins '
+                    'group to administrate the blog.')
+                }
 
     # Finally, we can test whether the user is a member of the blogadmins group.
     if user_name and user_id in member_ids:
         return {'success': True}
     else:
         return {'success': False,
-                'msg': 'Only blogadmins are allowed to administrate the blog'}
+                'msg': toolkit._(
+                    'Only blogadmins are allowed to administrate the blog')
+        }

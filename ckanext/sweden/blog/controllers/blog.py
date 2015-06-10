@@ -76,7 +76,7 @@ class BlogController(BaseController):
 
         model.Session.delete(post)
         model.Session.commit()
-        flash_notice("The blog post has been removed!")
+        flash_notice(toolkit._("The blog post has been removed!"))
 
         h.redirect_to(
             controller='ckanext.sweden.blog.controllers.blog:BlogController',
@@ -124,7 +124,7 @@ class BlogController(BaseController):
             newPost = Post(title, content, c.userobj.id)
             model.Session.add(newPost)
             model.Session.commit()
-            flash_notice("Your blog post has been saved!")
+            flash_notice(toolkit._("Your blog post has been saved!"))
 
             controller = 'ckanext.sweden.blog.controllers.blog:BlogController'
             h.redirect_to(controller=controller, action='admin_index')
@@ -169,7 +169,7 @@ class BlogController(BaseController):
             c.post.content = content
             model.Session.commit()
 
-            flash_notice("Your blog post has been updated!")
+            flash_notice(toolkit._("Your blog post has been updated!"))
 
             controller = 'ckanext.sweden.blog.controllers.blog:BlogController'
             h.redirect_to(controller=controller, action='admin_index')

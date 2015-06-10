@@ -15,7 +15,7 @@
     {% set xaxis = {'mode': 'time', 'timeformat': '%b \'%y'} %}
     {% set yaxis = {'min': 0} %}
     {% set lines = {'fill': 1} %}
-    {% set rawdata = [{"label": "All activity", "data": h.get_weekly_dataset_activity()}, {"label": "New datasets", "data": h.get_weekly_dataset_activity_new()}] %}
+    {% set rawdata = [{"label": _("All activity"), "data": h.get_weekly_dataset_activity()}, {"label": _("New datasets"), "data": h.get_weekly_dataset_activity_new()}] %}
     <h4 class="heading">{{ _('Dataset activity by week') }}</h4>
     <div class="inner" data-module="homepage-stats" data-module-lines="{{ h.dump_json(lines) }}" data-module-xaxis="{{ h.dump_json(xaxis) }}" data-module-yaxis="{{ h.dump_json(yaxis) }}" data-module-rawdata="{{ h.dump_json(rawdata) }}">
         <div style="width:260px;height:100px" class="demo-placeholder"></div>

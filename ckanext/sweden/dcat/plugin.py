@@ -31,8 +31,9 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
         try:
             r = requests.post(validation_service, data=content)
         except requests.exceptions.RequestException, e:
-            errors.append(
+            errors.append(p.toolkit._(
                 'Error contacting the validation service: {0}'.format(str(e)))
+            )
 
             if stop_on_errors:
                 return None, errors
@@ -41,9 +42,9 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
 
         if r.status_code != 200:
 
-            errors.append(
+            errors.append(p.toolkit._(
                 'The validation service returned an error: {0}'.format(
-                    r.status_code))
+                    r.status_code)))
 
             if stop_on_errors:
                 return None, errors
@@ -64,8 +65,8 @@ class SwedenDCATRDFHarvester(p.SingletonPlugin):
             else:
                 if response.get('mandatoryError'):
                     for _class in response['mandatoryError']:
-                        errors.append(
-                            'Mandatory class {0} missing'.format(_class))
+                        errors.append(p.toolkit._(
+                            'Mandatory class {0} missing'.format(_class)))
 
                 for resource in response.get('resources', []):
                     errors.append(json.dumps(resource))
