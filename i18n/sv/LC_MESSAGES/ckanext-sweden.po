@@ -1,23 +1,72 @@
-# Translations template for ckanext-sweden.
+# Swedish translations for ckanext-sweden.
 # Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the ckanext-sweden project.
-# 
+# This file is distributed under the same license as the ckanext-sweden
+# project.
+#
 # Translators:
 # Joe Tsoi, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: ckanext-sweden\n"
+"Project-Id-Version:  ckanext-sweden\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-09 11:31+0100\n"
+"POT-Creation-Date: 2015-06-10 11:31+0100\n"
 "PO-Revision-Date: 2015-06-09 14:22+0000\n"
 "Last-Translator: Joe Tsoi\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/ckanext-sweden/language/sv/)\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/ckanext-"
+"sweden/language/sv/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
-"Language: sv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ckanext/sweden/controllers.py:15 ckanext/sweden/controllers.py:35
+msgid "Organization not found"
+msgstr ""
+
+#: ckanext/sweden/plugin.py:78
+msgid "Eurovoc Categories"
+msgstr ""
+
+#: ckanext/sweden/plugin.py:184
+msgid "There already is an organization with this URL: {0}"
+msgstr ""
+
+#: ckanext/sweden/blog/authorize.py:15
+msgid ""
+"The blogadmins groups doesn't exist, so only sysadmins are authorized to "
+"administrate the blog."
+msgstr ""
+
+#: ckanext/sweden/blog/authorize.py:32
+msgid ""
+"You must be logged-in as a member of the blogadmins group to administrate"
+" the blog."
+msgstr ""
+
+#: ckanext/sweden/blog/authorize.py:42
+msgid "Only blogadmins are allowed to administrate the blog"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:20
+msgid "You must enter a title"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:27
+msgid "There's already a post with that title"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:79
+msgid "The blog post has been removed!"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:127
+msgid "Your blog post has been saved!"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:172
+msgid "Your blog post has been updated!"
+msgstr ""
 
 #: ckanext/sweden/blog/templates/header.html:6
 #: ckanext/sweden/blog/templates/blog/admin.html:3
@@ -140,6 +189,18 @@ msgstr ""
 msgid "This post has no content"
 msgstr ""
 
+#: ckanext/sweden/dcat/plugin.py:35
+msgid "Error contacting the validation service: {0}"
+msgstr ""
+
+#: ckanext/sweden/dcat/plugin.py:46
+msgid "The validation service returned an error: {0}"
+msgstr ""
+
+#: ckanext/sweden/dcat/plugin.py:69
+msgid "Mandatory class {0} missing"
+msgstr ""
+
 #: ckanext/sweden/dcat/templates/source/job/read.html:28
 msgid "Back to job list"
 msgstr ""
@@ -163,17 +224,18 @@ msgstr ""
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:45
 #: ckanext/sweden/dcat/templates/source/job/read.html:63
-#: ckanext/sweden/dcat/templates/source/job/read.html:109
+#: ckanext/sweden/dcat/templates/source/job/read.html:116
 msgid "Job Errors"
 msgstr ""
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:49
-#: ckanext/sweden/dcat/templates/source/job/read.html:128
+#: ckanext/sweden/dcat/templates/source/job/read.html:135
 msgid "Document Errors"
 msgstr ""
 
+#. this is a column in the Resource Errors table
 #: ckanext/sweden/dcat/templates/source/job/read.html:60
-#: ckanext/sweden/dcat/templates/source/job/read.html:106
+#: ckanext/sweden/dcat/templates/source/job/read.html:113
 msgid "Error Report"
 msgstr ""
 
@@ -181,15 +243,30 @@ msgstr ""
 msgid "Resource Errors"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:129
+#. this is a column in the Resource Errors table
+#: ckanext/sweden/dcat/templates/source/job/read.html:88
+msgid "Type"
+msgstr ""
+
+#. this is a column in the Resource Errors table
+#: ckanext/sweden/dcat/templates/source/job/read.html:90
+msgid "Template"
+msgstr ""
+
+#. this is a column in the Resource Errors table
+#: ckanext/sweden/dcat/templates/source/job/read.html:92
+msgid "Uri"
+msgstr ""
+
+#: ckanext/sweden/dcat/templates/source/job/read.html:136
 msgid "documents with errors"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:140
+#: ckanext/sweden/dcat/templates/source/job/read.html:147
 msgid "Remote content"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:144
+#: ckanext/sweden/dcat/templates/source/job/read.html:151
 msgid "Local content"
 msgstr ""
 
@@ -258,6 +335,14 @@ msgstr ""
 msgid "Total datasets by week"
 msgstr ""
 
+#: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
+msgid "All activity"
+msgstr ""
+
+#: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
+msgid "New datasets"
+msgstr ""
+
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:19
 msgid "Dataset activity by week"
 msgstr ""
@@ -273,3 +358,4 @@ msgstr ""
 #: ckanext/sweden/theme/templates/home/snippets/tweets.html:5
 msgid "Loading recent tweets"
 msgstr ""
+
