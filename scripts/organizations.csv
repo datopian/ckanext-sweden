@@ -1,0 +1,8 @@
+name,url,dcat_url,admin_email
+Naturvårdsverket,http://www.naturvardsverket.se,http://mdebeta.vic-metria.nu/metadataeditor/srv/eng/metadata.harvest.rdf?type=dataset,amercadero@gmail.com
+Kungliga biblioteket,http://www.kb.se,https://data.kb.se/index.rdf,
+Sveriges Geologiska Undersökning,http://www.sgu.se,http://resource.sgu.se/data/datasets/dcat/sgu-oppnadata-dcat-catalog.rdf,
+Protokollen,http://www.protokollen.net,http://www.protokollen.net/datasets/dcat,
+Svenska kyrkan,https://svenskakyrkan.se,https://api.svenskakyrkan.se/datasets/dcat,
+Bokföringsnämnden,http://www.bfn.se,,
+Försäkringskassan,http://www.forsakringskassan.se,,

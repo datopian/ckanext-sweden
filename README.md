@@ -33,7 +33,7 @@ To enable, activate your CKAN virtual environment and then:
 
         sudo apt-get install redis-server build-essential libffi-dev
 
-2. Install sweden_dcat_rdf_harvester requirements
+2. Install `sweden_dcat_rdf_harvester` requirements
 
         pip install -r ckanext/sweden/dcat/requirements.txt
 
@@ -119,6 +119,13 @@ hidegroups](https://github.com/okfn/ckanext-hidegroups) extension::
     pip install -e 'git+git://github.com/okfn/ckanext-hidegroups.git#egg=ckanext-hidegroups'
 
 Then add ``hidegroups`` to ``ckan.plugins``.
+
+
+Script for automated organizations creation
+-------------------------------------------
+
+The extension includes a standalone script to automate the creation of organizations on
+the portal. For details, check the `scripts` folder.
 
 
 Tests
