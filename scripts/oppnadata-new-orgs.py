@@ -140,7 +140,7 @@ def create_org(ckan, org_title, org_url, dcat_url=None, admin_email=None,
         user_exists = False
         for org_user in org.get('users', []):
             user = ckan.action.user_show(id=org_user['name'])
-            if user['email'] == admin_email:
+            if user.get('email') == admin_email:
                 user_exists = True
                 _out(('User {0} already an admin of "{1}", skipping invite' +
                      '...').format(admin_email, org_title_output))
