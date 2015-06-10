@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-sweden 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-09 11:31+0100\n"
+"POT-Creation-Date: 2015-06-10 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+#: ckanext/sweden/controllers.py:15 ckanext/sweden/controllers.py:35
+msgid "Organization not found"
+msgstr ""
+
+#: ckanext/sweden/plugin.py:78
+msgid "Eurovoc Categories"
+msgstr ""
+
+#: ckanext/sweden/plugin.py:184
+msgid "There already is an organization with this URL: {0}"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:20
+msgid "You must enter a title"
+msgstr ""
+
+#: ckanext/sweden/blog/controllers/blog.py:27
+msgid "There's already a post with that title"
+msgstr ""
 
 #: ckanext/sweden/blog/templates/header.html:6
 #: ckanext/sweden/blog/templates/blog/admin.html:3
