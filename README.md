@@ -110,6 +110,21 @@ To enable Eurovoc categories:
    `ckan.plugins`.
 
 
+Dataset Stats API Endpoints
+---------------------------
+
+The `sweden_theme` extension adds a number of additional API endpoints to
+retrieve data about datasets in the site.
+
+* `total_datasets_by_week`: the cumulative total number of datasets by week.
+* `weekly_dataset_activity`: the number of updates to datasets per week.
+* `weekly_dataset_activity_new`: the number of new datasets per week.
+
+e.g.::
+
+        curl -X POST http://127.0.0.1:5000/api/3/action/weekly_dataset_activity -d '{}' -H "Authorization:<your-api-key>"
+
+
 Hide 'Groups'
 -------------
 

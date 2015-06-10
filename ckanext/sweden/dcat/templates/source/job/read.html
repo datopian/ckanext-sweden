@@ -83,11 +83,18 @@
         <table class="table table-bordered table-hover harvest-error-list">
           <tbody>
             <tr>
-              <th>Type</th>
-              <th>Template</th>
-              <th>Uri</th>
+              
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
+              <th>{{ _('Type') }}</th>
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
+              <th>{{ _('Template') }}</th>
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
+              <th>{{ _('Uri') }}</th>
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
               <th>Severity</th>
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
               <th>Property In Graph</th>
+              {# TRANSLATORS: this is a column in the Resource Errors table #}
               <th>Problem</th>
             </tr>
             {% for error in c.job_report.gather_errors %}
@@ -126,6 +133,7 @@
 
       {% if c.job_report.object_errors.keys()|length > 0 %}
         <h3>{{ _('Document Errors') }}
+          {# TRANSLATORS: '(num) documents with errors' #}
           <small>{{ c.job_report.object_errors.keys()|length}} {{ _('documents with errors') }}</small>
         </h3>
         <table class="table table-bordered table-hover harvest-error-list">

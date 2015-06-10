@@ -1,7 +1,9 @@
 import ckan.plugins as p
 from ckan import model
 
-import helpers
+from ckanext.sweden.theme import helpers
+from ckanext.sweden.theme.logic import actions
+from ckanext.sweden.theme.logic import auth
 
 
 def _get_datasets(sort):
@@ -36,17 +38,44 @@ def get_recent_blog_posts():
 
 
 class ThemePlugin(p.SingletonPlugin):
-    """This extension adds the ckanext-theme to ckan
+    '''This extension adds the ckanext_sweden theme to ckan.
 
-    This extension implements two interfaces
+    This extension implements four interfaces
 
       - ``IConfigurer`` allows to modify the configuration
       - ``IConfigurable`` get the configuration
-    """
+      - ``ITemplateHelpers`` make helper methods available to templates
+      - ``IActions`` add custom API endpoints
+      - ``IAuthFunctions`` add authentication methods for use by actions
+    '''
+
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IConfigurable, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=False)
+    p.implements(p.IActions)
+    p.implements(p.IAuthFunctions)
 
+    # IConfigurer
+    def update_config(self, config):
+        ''' Set up template, public and fanstatic directories
+        '''
+        config['ckan.site_logo'] = '/images/logo.png'
+        config['ckan.favicon'] = '/images/favicon.ico'
+
+        p.toolkit.add_template_directory(config, 'templates')
+        p.toolkit.add_public_directory(config, 'public')
+        p.toolkit.add_resource('resources', 'theme')
+
+    # IActions
+    def get_actions(self):
+        return {
+            'total_datasets_by_week': actions.total_datasets_by_week,
+            'weekly_dataset_activity': actions.weekly_dataset_activity,
+            'weekly_dataset_activity_new':
+                actions.weekly_dataset_activity_new
+        }
+
+    # ITemplateHelpers
     def get_helpers(self):
         return {
             'get_most_viewed_datasets': get_most_viewed_datasets,
@@ -60,12 +89,8 @@ class ThemePlugin(p.SingletonPlugin):
                 helpers.get_weekly_dataset_activity_new
         }
 
-    def update_config(self, config):
-        ''' Set up template, public and fanstatic directories
-        '''
-        config['ckan.site_logo'] = '/images/logo.png'
-        config['ckan.favicon'] = '/images/favicon.ico'
-
-        p.toolkit.add_template_directory(config, 'templates')
-        p.toolkit.add_public_directory(config, 'public')
-        p.toolkit.add_resource('resources', 'theme')
+    # IAuthFunctions
+    def get_auth_functions(self):
+        return {
+            'sweden_stats_show': auth.sweden_stats_show,
+        }

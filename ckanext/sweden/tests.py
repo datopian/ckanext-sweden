@@ -57,6 +57,7 @@ class TestDcatOrganizationList(helpers.FunctionalTestBase):
 
         assert_equal(len(dcat_org_list), 1)
         dcat_org = dcat_org_list[0]
+
         assert_equal(dcat_org['id'], org['id'])
         assert_equal(dcat_org['original_dcat_metadata_url'], u'http://example.com/source')
         assert_equal(dcat_org['url'], u'http://example.com/url')
