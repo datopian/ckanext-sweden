@@ -182,7 +182,6 @@ be prompt for them.
     parser.add_argument('-a', '--api_key',
                         help='A valid sysadmin key for Oppnadata.se')
     parser.add_argument('-s', '--site',
-                        default='http://oppnadata.se',
                         help='URL of the site to target (defaults to ' +
                              'http://oppnadata.se)')
     parser.add_argument('-t', '--org_title',
@@ -209,9 +208,11 @@ be prompt for them.
                  api_key_env_var_name))
             sys.exit(1)
 
-    site = os.environ.get(site_env_var_name)
+    site = args.site
     if not site:
-        site = args.site
+        site = os.environ.get(site_env_var_name)
+        if not site:
+            site = 'http://oppnadata.se'
 
     ckan = ckanapi.RemoteCKAN(site, apikey=api_key)
 
