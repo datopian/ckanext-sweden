@@ -1,4 +1,5 @@
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib import URIRef, BNode, Literal
 
 from ckanext.dcat.profiles import RDFProfile
 
@@ -24,3 +25,23 @@ class SwedishDCATAPProfile(RDFProfile):
                                                'value': str(spatial_label)})
 
         return dataset_dict
+
+    def graph_from_dataset(self, dataset_dict, dataset_ref):
+
+        g = self.g
+
+        spatial_uri = self._get_dataset_value(dataset_dict, 'spatial_uri')
+        spatial_text = self._get_dataset_value(dataset_dict, 'spatial_text')
+
+        spatial_geom = self._get_dataset_value(dataset_dict, 'spatial')
+
+        if spatial_uri:
+            spatial_ref = URIRef(spatial_uri)
+        else:
+            spatial_ref = BNode()
+
+        g.add((spatial_ref, RDF.type, DCT.Location))
+        g.add((dataset_ref, DCT.spatial, spatial_ref))
+
+        if spatial_text:
+            g.add((spatial_ref, RDFS.label, Literal(spatial_text)))
