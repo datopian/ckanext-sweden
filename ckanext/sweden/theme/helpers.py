@@ -49,25 +49,28 @@ def get_package_revisions():
     return res
 
 
-def get_weekly_new_dataset_totals(timestamp=True):
+def get_weekly_new_dataset_totals(timestamp=True, zero_week=True):
     '''For each week, return the cumulative total number of datasets.'''
     new_datasets = get_new_datasets()
 
-    return _weekly_totals(new_datasets, timestamp=timestamp, cumulative=True)
+    return _weekly_totals(new_datasets, timestamp=timestamp, cumulative=True,
+                          zero_week=zero_week)
 
 
-def get_weekly_dataset_activity(timestamp=True):
+def get_weekly_dataset_activity(timestamp=True, zero_week=True):
     '''For each week, get the number datasets with some sort of activity.'''
     pkg_revisions = get_package_revisions()
 
-    return _weekly_totals(pkg_revisions, timestamp=timestamp)
+    return _weekly_totals(pkg_revisions, timestamp=timestamp,
+                          zero_week=zero_week)
 
 
-def get_weekly_dataset_activity_new(timestamp=True):
+def get_weekly_dataset_activity_new(timestamp=True, zero_week=True):
     '''For each week, get the number of new datasets.'''
     new_datasets = get_new_datasets()
 
-    return _weekly_totals(new_datasets, timestamp=timestamp)
+    return _weekly_totals(new_datasets, timestamp=timestamp,
+                          zero_week=zero_week)
 
 
 def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_label,

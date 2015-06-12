@@ -29,7 +29,7 @@ class TestWeeklyTotalsHelpers(helpers.FunctionalTestBase):
         batches with correct weekly totals.
         '''
 
-        weekly_totals = swe_helpers._weekly_totals(self.l)
+        weekly_totals = swe_helpers._weekly_totals(self.l, zero_week=False)
 
         nosetools.assert_equal(len(weekly_totals), 3)
 
@@ -51,7 +51,8 @@ class TestWeeklyTotalsHelpers(helpers.FunctionalTestBase):
         A list of (datetime, id) tuples is correctly grouped into weekly
         batches with correct cumulative weekly totals.
         '''
-        weekly_totals = swe_helpers._weekly_totals(self.l, cumulative=True)
+        weekly_totals = swe_helpers._weekly_totals(self.l, cumulative=True,
+                                                   zero_week=False)
 
         nosetools.assert_equal(len(weekly_totals), 3)
 
@@ -73,7 +74,8 @@ class TestWeeklyTotalsHelpers(helpers.FunctionalTestBase):
         A list of (datetime, id) tuples is correctly grouped into weekly
         batches with correct translated datetime --> timestamp values.
         '''
-        weekly_totals = swe_helpers._weekly_totals(self.l, timestamp=True)
+        weekly_totals = swe_helpers._weekly_totals(self.l, timestamp=True,
+                                                   zero_week=False)
 
         nosetools.assert_equal(len(weekly_totals), 3)
 

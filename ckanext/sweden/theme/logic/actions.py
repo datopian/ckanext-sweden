@@ -12,7 +12,7 @@ def total_datasets_by_week(context, data_dict):
     '''
     toolkit.check_access('sweden_stats_show', context, data_dict)
 
-    return helpers.get_weekly_new_dataset_totals()
+    return helpers.get_weekly_new_dataset_totals(zero_week=False)
 
 
 @toolkit.side_effect_free
