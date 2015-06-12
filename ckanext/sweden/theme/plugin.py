@@ -88,7 +88,9 @@ class ThemePlugin(p.SingletonPlugin):
             'get_weekly_dataset_activity_new':
                 helpers.get_weekly_dataset_activity_new,
             'get_weekly_new_dataset_totals_for_eurovoc_category':
-                helpers.get_weekly_new_dataset_totals_for_eurovoc_category
+                helpers.get_weekly_new_dataset_totals_for_eurovoc_category,
+            'get_random_active_eurovoc_label':
+                helpers.get_random_active_eurovoc_label
         }
 
     # IAuthFunctions

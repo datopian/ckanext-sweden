@@ -1,3 +1,4 @@
+import random
 from itertools import groupby
 import datetime
 import calendar
@@ -69,15 +70,16 @@ def get_weekly_dataset_activity_new(timestamp=True):
     return _weekly_totals(new_datasets, timestamp=timestamp)
 
 
-def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_id,
+def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_label,
                                                        timestamp=True):
     '''
-    For a given eurovoc category id return the cumulative total number of
+    For a given eurovoc category label return the cumulative total number of
     weekly new datasets.
     '''
     # get package ids for packages with the relevant eurovoc category.
     pkgs = toolkit.get_action('package_search')(
-        data_dict={'fq': '+eurovoc_category:"{0}"'.format(eurovoc_id)}
+        data_dict={'fq':
+                   u'+eurovoc_category_label:"{0}"'.format(eurovoc_label)}
     )
     pkg_ids = [pkg['id'] for pkg in pkgs['results']]
 
@@ -88,11 +90,33 @@ def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_id,
                           timestamp=timestamp, cumulative=True)
 
 
-def _weekly_totals(id_date_list, cumulative=False, timestamp=False):
+def get_random_active_eurovoc_label():
+    '''
+    Return a eurovoc category label randomly picked from a list of eurovoc
+    categories (that have at least one dataset, otherwise the chart will have
+    nothing to show).
+    '''
+    # get active eurovoc category labels from package search
+    search_results = toolkit.get_action('package_search')(
+        data_dict={'facet.field': ['eurovoc_category_label']}
+    )
+    facets = search_results.get('facets')
+    facet_labels = [key for key in facets['eurovoc_category_label'].keys()]
+
+    return random.choice(facet_labels)
+
+
+def _weekly_totals(id_date_list, cumulative=False, timestamp=False,
+                   zero_week=True):
     '''
     For a list of (id, datetime) tuples, count the number of ids in each
-    weekly batch (starting Monday). If cumulative is True, add previous counts
-    to the total for each subsequent timestamp (e.g. to determine growth).
+    weekly batch (starting Monday).
+
+    If cumulative is True, add previous counts to the total for each
+    subsequent timestamp (e.g. to determine growth).
+
+    If zero_week is True, prepend a (timestamp, 0) pair to the start of the
+    list, where the timestamp is a week before the earliest date.
 
     Return a list of tuples in the form (date, id count). If `timestamp` is
     True, the date is a timestamp in milliseconds, otherwise date is a
@@ -100,6 +124,13 @@ def _weekly_totals(id_date_list, cumulative=False, timestamp=False):
 
     e.g.: [(1429488000000, 8), (1430092800000, 10), (1430697600000, 13)]
     '''
+
+    if zero_week:
+        first_date = id_date_list[0][1]
+        previous_week = first_date - datetime.timedelta(weeks=1)
+        previous_week_start = _transform_to_week_start(previous_week)
+        if timestamp:
+            previous_week_start = _datetime_to_timestamp(previous_week_start)
 
     # transform each datetime to its week start and convert to timestamp
     ids_week_start = [(pkg_id, _transform_to_week_start(date_time))
@@ -118,6 +149,9 @@ def _weekly_totals(id_date_list, cumulative=False, timestamp=False):
         else:
             total_datasets = len(list(group))
         week_totals.append((week, total_datasets))
+
+    if zero_week:
+        week_totals.insert(0, (previous_week_start, 0))
 
     return week_totals
 
