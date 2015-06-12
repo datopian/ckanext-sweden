@@ -1,3 +1,5 @@
+from sqlalchemy.sql.expression import true
+
 import ckan.plugins as p
 from ckan import model
 
@@ -33,7 +35,7 @@ def get_top_groups():
 def get_recent_blog_posts():
     from ckanext.sweden.blog.model.post import Post
     posts = model.Session.query(Post).\
-        filter(Post.visible is True).order_by('created desc').limit(3)
+        filter(Post.visible == true()).order_by('created desc').limit(3)
     return posts
 
 
