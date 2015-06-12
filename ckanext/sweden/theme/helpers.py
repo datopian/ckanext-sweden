@@ -57,26 +57,27 @@ def get_weekly_new_dataset_totals(timestamp=True, zero_week=True):
                           zero_week=zero_week)
 
 
-def get_weekly_dataset_activity(timestamp=True, zero_week=True):
+def get_weekly_dataset_activity(timestamp=True):
     '''For each week, get the number datasets with some sort of activity.'''
     pkg_revisions = get_package_revisions()
 
     return _weekly_totals(pkg_revisions, timestamp=timestamp,
-                          zero_week=zero_week)
+                          zero_week=False)
 
 
-def get_weekly_dataset_activity_new(timestamp=True, zero_week=True):
+def get_weekly_dataset_activity_new(timestamp=True):
     '''For each week, get the number of new datasets.'''
     new_datasets = get_new_datasets()
 
     return _weekly_totals(new_datasets, timestamp=timestamp,
-                          zero_week=zero_week)
+                          zero_week=False)
 
 
-def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_label,
-                                                       timestamp=True):
+def get_weekly_new_dataset_totals_for_eurovoc_label(eurovoc_label,
+                                                    timestamp=True,
+                                                    zero_week=True):
     '''
-    For a given eurovoc category label return the cumulative total number of
+    For a given eurovoc category label, return the cumulative total number of
     weekly new datasets.
     '''
     # get package ids for packages with the relevant eurovoc category.
@@ -89,8 +90,9 @@ def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_label,
     # get a list of (package_revision id, datetime) for the passed package ids
     new_datasets_for_pkg_ids = get_new_datasets(pkg_ids=pkg_ids)
 
-    return _weekly_totals(new_datasets_for_pkg_ids,
-                          timestamp=timestamp, cumulative=True)
+    return _weekly_totals(new_datasets_for_pkg_ids, timestamp=timestamp,
+                          cumulative=True,
+                          zero_week=zero_week)
 
 
 def get_random_active_eurovoc_label():
