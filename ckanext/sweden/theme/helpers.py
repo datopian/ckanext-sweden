@@ -3,6 +3,7 @@ import datetime
 import calendar
 from sqlalchemy import Table, select, func
 
+from ckan.plugins import toolkit
 import ckan.model as model
 
 
@@ -10,18 +11,22 @@ def table(name):
     return Table(name, model.meta.metadata, autoload=True)
 
 
-def get_new_datasets():
+def get_new_datasets(pkg_ids=None):
     '''
-    Returns list of new pkgs and date when they were created,
+    Return a list of new pkgs and date when they were created,
     in format: [(id, datetime), ...]
+
+    If pkg_ids list is passed, limit query to just those packages.
     '''
     # Can't filter by time in select because 'min' function has to
     # be 'for all time' else you get first revision in the time period.
     package_revision = table('package_revision')
     revision = table('revision')
     s = select([package_revision.c.id, func.min(revision.c.timestamp)],
-               from_obj=[package_revision.join(revision)]).\
-        group_by(package_revision.c.id).\
+               from_obj=[package_revision.join(revision)])
+    if pkg_ids:
+        s = s.where(package_revision.c.id.in_(pkg_ids))
+    s = s.group_by(package_revision.c.id).\
         order_by(func.min(revision.c.timestamp))
     res = model.Session.execute(s).fetchall()  # [(id, datetime), ...]
     res_pickleable = []
@@ -32,7 +37,7 @@ def get_new_datasets():
 
 def get_package_revisions():
     '''
-    Returns list of revisions and date of them, in format: [(id, date), ...]
+    Return a list of revision id and datetime, in format: [(id, date), ...]
     '''
     package_revision = table('package_revision')
     revision = table('revision')
@@ -62,6 +67,25 @@ def get_weekly_dataset_activity_new(timestamp=True):
     new_datasets = get_new_datasets()
 
     return _weekly_totals(new_datasets, timestamp=timestamp)
+
+
+def get_weekly_new_dataset_totals_for_eurovoc_category(eurovoc_id,
+                                                       timestamp=True):
+    '''
+    For a given eurovoc category id return the cumulative total number of
+    weekly new datasets.
+    '''
+    # get package ids for packages with the relevant eurovoc category.
+    pkgs = toolkit.get_action('package_search')(
+        data_dict={'fq': '+eurovoc_category:"{0}"'.format(eurovoc_id)}
+    )
+    pkg_ids = [pkg['id'] for pkg in pkgs['results']]
+
+    # get a list of (package_revision id, datetime) for the passed package ids
+    new_datasets_for_pkg_ids = get_new_datasets(pkg_ids=pkg_ids)
+
+    return _weekly_totals(new_datasets_for_pkg_ids,
+                          timestamp=timestamp, cumulative=True)
 
 
 def _weekly_totals(id_date_list, cumulative=False, timestamp=False):
