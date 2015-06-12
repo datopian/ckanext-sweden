@@ -24,7 +24,7 @@ def weekly_dataset_activity(context, data_dict):
     '''
     toolkit.check_access('sweden_stats_show', context, data_dict)
 
-    return helpers.get_weekly_dataset_activity()
+    return helpers.get_weekly_dataset_activity(zero_week=False)
 
 
 @toolkit.side_effect_free
@@ -36,20 +36,4 @@ def weekly_dataset_activity_new(context, data_dict):
     '''
     toolkit.check_access('sweden_stats_show', context, data_dict)
 
-    return helpers.get_weekly_dataset_activity_new()
-
-
-@toolkit.side_effect_free
-def total_datasets_by_week_for_eurovoc(context, data_dict):
-    '''
-    Return a list of [datetime, count] pairs where the datetime is the start
-    of the week (Monday), and the count is the total number of datasets in
-    that week for the passed eurovoc category id. `datetime` is a timestamp in
-    millisecs.
-    '''
-    toolkit.check_access('sweden_stats_show', context, data_dict)
-
-    eurovoc_id = toolkit.get_or_bust(data_dict, ['eurovoc_id'])
-
-    return helpers.get_weekly_new_dataset_totals_for_eurovoc_id(eurovoc_id,
-                                                                zero_week=False)
+    return helpers.get_weekly_dataset_activity_new(zero_week=False)
