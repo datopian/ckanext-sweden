@@ -45,6 +45,7 @@ setup(
             ('**/theme/resources/scripts/**', 'ignore', None),
             ('**.js', 'javascript', None),
             ('**/templates/**.html', 'ckan', None),
+            ('**/templates/**.txt', 'ckan', None),
         ],
     }
 )
