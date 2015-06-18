@@ -108,7 +108,10 @@ def get_random_active_eurovoc_label():
     facets = search_results.get('facets')
     facet_labels = [key for key in facets['eurovoc_category_label'].keys()]
 
-    return random.choice(facet_labels)
+    try:
+        return random.choice(facet_labels)
+    except IndexError:
+        return None
 
 
 def _weekly_totals(id_date_list, cumulative=False, timestamp=False,
