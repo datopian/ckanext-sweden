@@ -1,72 +1,73 @@
-# Swedish translations for ckanext-sweden.
+# Translations template for ckanext-sweden.
 # Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the ckanext-sweden
-# project.
-#
+# This file is distributed under the same license as the ckanext-sweden project.
+# 
 # Translators:
+# Börje Lewin <borjelewin@gmail.com>, 2015
+# Joe Tsoi, 2015
 # Joe Tsoi, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version:  ckanext-sweden\n"
+"Project-Id-Version: ckanext-sweden\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-10 11:31+0100\n"
-"PO-Revision-Date: 2015-06-09 14:22+0000\n"
-"Last-Translator: Joe Tsoi\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/ckanext-"
-"sweden/language/sv/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"PO-Revision-Date: 2015-06-11 17:54+0000\n"
+"Last-Translator: Börje Lewin <borjelewin@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/ckanext-sweden/language/sv/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ckanext/sweden/controllers.py:15 ckanext/sweden/controllers.py:35
 msgid "Organization not found"
-msgstr ""
+msgstr "Hittar inte organisationen"
 
 #: ckanext/sweden/plugin.py:78
 msgid "Eurovoc Categories"
-msgstr ""
+msgstr "Eurovoc-kategorier"
 
 #: ckanext/sweden/plugin.py:184
 msgid "There already is an organization with this URL: {0}"
-msgstr ""
+msgstr "Det finns redan en organisation med URL: {0}"
 
 #: ckanext/sweden/blog/authorize.py:15
 msgid ""
 "The blogadmins groups doesn't exist, so only sysadmins are authorized to "
 "administrate the blog."
-msgstr ""
+msgstr "Gruppen för bloggadmin finns inte, så endast systemadministratörer har behörighet att administrera bloggen."
 
 #: ckanext/sweden/blog/authorize.py:32
 msgid ""
-"You must be logged-in as a member of the blogadmins group to administrate"
-" the blog."
-msgstr ""
+"You must be logged-in as a member of the blogadmins group to administrate "
+"the blog."
+msgstr "Du måste logga in som medlem i gruppen för bloggadmin för att administrera bloggen."
 
 #: ckanext/sweden/blog/authorize.py:42
 msgid "Only blogadmins are allowed to administrate the blog"
-msgstr ""
+msgstr "Endast bloggadministratörer kan administrera bloggen."
 
 #: ckanext/sweden/blog/controllers/blog.py:20
 msgid "You must enter a title"
-msgstr ""
+msgstr "Du måste ange en rubrik"
 
 #: ckanext/sweden/blog/controllers/blog.py:27
 msgid "There's already a post with that title"
-msgstr ""
+msgstr "Det finns redan ett inlägg med den rubriken"
 
 #: ckanext/sweden/blog/controllers/blog.py:79
 msgid "The blog post has been removed!"
-msgstr ""
+msgstr "Blogginlägget har tagits bort"
 
 #: ckanext/sweden/blog/controllers/blog.py:127
 msgid "Your blog post has been saved!"
-msgstr ""
+msgstr "Dit blogginlägg har sparats"
 
 #: ckanext/sweden/blog/controllers/blog.py:172
 msgid "Your blog post has been updated!"
-msgstr ""
+msgstr "Ditt blogginlägg har uppdaterats."
 
 #: ckanext/sweden/blog/templates/header.html:6
 #: ckanext/sweden/blog/templates/blog/admin.html:3
@@ -79,7 +80,7 @@ msgstr ""
 #: ckanext/sweden/blog/templates/blog/admin_list.html:6
 #: ckanext/sweden/blog/templates/blog/admin_list.html:22
 msgid "Blog admin"
-msgstr ""
+msgstr "Bloggadmin"
 
 #: ckanext/sweden/blog/templates/header.html:16
 #: ckanext/sweden/blog/templates/blog/index.html:3
@@ -97,265 +98,264 @@ msgstr "Nyheter"
 #: ckanext/sweden/blog/templates/blog/admin_list.html:14
 #: ckanext/sweden/blog/templates/blog/admin_list.html:25
 msgid "All"
-msgstr ""
+msgstr "Alla"
 
 #: ckanext/sweden/blog/templates/blog/admin.html:16
 #: ckanext/sweden/blog/templates/blog/admin.html:24
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:16
 #: ckanext/sweden/blog/templates/blog/admin_list.html:17
 msgid "Create"
-msgstr ""
+msgstr "Skapa"
 
 #: ckanext/sweden/blog/templates/blog/admin.html:24
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:24
 #: ckanext/sweden/blog/templates/blog/admin_list.html:46
 msgid "post"
-msgstr ""
+msgstr "inlägg"
 
 #: ckanext/sweden/blog/templates/blog/admin.html:28
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:29
 #: ckanext/sweden/blog/templates/blog/admin_list.html:31
 msgid "Title"
-msgstr ""
+msgstr "Rubrik"
 
 #: ckanext/sweden/blog/templates/blog/admin.html:29
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:30
 msgid "Content"
-msgstr ""
+msgstr "Innehåll"
 
 #: ckanext/sweden/blog/templates/blog/admin.html:30
 msgid "Save"
-msgstr ""
+msgstr "Spara"
 
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:24
 msgid "Edit"
-msgstr ""
+msgstr "Redigera"
 
 #: ckanext/sweden/blog/templates/blog/admin_edit.html:31
 msgid "Update"
-msgstr ""
+msgstr "Uppdatera"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:25
 msgid "posts"
-msgstr ""
+msgstr "inlägg"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:32
 msgid "Excerpt"
-msgstr ""
+msgstr "Utdrag"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:33
 msgid "Created"
-msgstr ""
+msgstr "Skapad"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:34
 msgid "Actions"
-msgstr ""
+msgstr "Åtgärder"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:45
 msgid "Are you sure you want to delete this post?"
-msgstr ""
+msgstr "Vill du ta bort detta inlägg?"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:45
 msgid "Please Confirm Action"
-msgstr ""
+msgstr "Bekräfta åtgärden"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:45
 msgid "Confirm"
-msgstr ""
+msgstr "Bekräfta"
 
 #: ckanext/sweden/blog/templates/blog/admin_list.html:46
 msgid "Remove"
-msgstr ""
+msgstr "Radera"
 
 #: ckanext/sweden/blog/templates/blog/index.html:10
 msgid "Feed"
-msgstr ""
+msgstr "Matning"
 
 #: ckanext/sweden/blog/templates/blog/snippets/post_item.html:29
 #: ckanext/sweden/blog/templates/home/snippets/promoted.html:19
 #: ckanext/sweden/theme/templates/home/snippets/news.html:21
 msgid "Show full blog post"
-msgstr ""
+msgstr "Visa hela blogginlägget"
 
 #: ckanext/sweden/blog/templates/blog/snippets/post_item.html:29
 #: ckanext/sweden/blog/templates/home/snippets/promoted.html:19
 #: ckanext/sweden/theme/templates/home/snippets/news.html:21
 msgid "Read more"
-msgstr ""
+msgstr "Läs mer"
 
 #: ckanext/sweden/blog/templates/blog/snippets/post_item.html:31
 #: ckanext/sweden/blog/templates/home/snippets/promoted.html:21
 #: ckanext/sweden/theme/templates/home/snippets/news.html:23
 msgid "This post has no content"
-msgstr ""
+msgstr "Inlägget har inget innehåll"
 
 #: ckanext/sweden/dcat/plugin.py:35
 msgid "Error contacting the validation service: {0}"
-msgstr ""
+msgstr "Kan inte ansluta till valideringstjänst: {0}"
 
 #: ckanext/sweden/dcat/plugin.py:46
 msgid "The validation service returned an error: {0}"
-msgstr ""
+msgstr "Valideringstjänsten svarade med följande fel: {0}"
 
 #: ckanext/sweden/dcat/plugin.py:69
 msgid "Mandatory class {0} missing"
-msgstr ""
+msgstr "Den obligatoriska klassen {0} saknas"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:28
 msgid "Back to job list"
-msgstr ""
+msgstr "Tillbaka till jobblista"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:31
 msgid "Job Report"
-msgstr ""
+msgstr "Jobbrapport"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:37
 #: ckanext/sweden/dcat/templates/source/job/read.html:41
 msgid "Error Summary"
-msgstr ""
+msgstr "Översikt för felaktigheter"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:38
 msgid "No errors for this job"
-msgstr ""
+msgstr "Inga fel för detta jobb"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:42
 msgid "Only the 20 most frequent errors are shown"
-msgstr ""
+msgstr "Endast de 20 vanligaste felen visas"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:45
 #: ckanext/sweden/dcat/templates/source/job/read.html:63
 #: ckanext/sweden/dcat/templates/source/job/read.html:116
 msgid "Job Errors"
-msgstr ""
+msgstr "Jobbfel"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:49
 #: ckanext/sweden/dcat/templates/source/job/read.html:135
 msgid "Document Errors"
-msgstr ""
+msgstr "Dokumentfel"
 
 #. this is a column in the Resource Errors table
 #: ckanext/sweden/dcat/templates/source/job/read.html:60
 #: ckanext/sweden/dcat/templates/source/job/read.html:113
 msgid "Error Report"
-msgstr ""
+msgstr "Felrapport"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:82
 msgid "Resource Errors"
-msgstr ""
+msgstr "Resursfel"
 
 #. this is a column in the Resource Errors table
 #: ckanext/sweden/dcat/templates/source/job/read.html:88
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #. this is a column in the Resource Errors table
 #: ckanext/sweden/dcat/templates/source/job/read.html:90
 msgid "Template"
-msgstr ""
+msgstr "Mall"
 
 #. this is a column in the Resource Errors table
 #: ckanext/sweden/dcat/templates/source/job/read.html:92
 msgid "Uri"
-msgstr ""
+msgstr "URI"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:136
 msgid "documents with errors"
-msgstr ""
+msgstr "dokument med fel"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:147
 msgid "Remote content"
-msgstr ""
+msgstr "Innehåll på fjärrsidan"
 
 #: ckanext/sweden/dcat/templates/source/job/read.html:151
 msgid "Local content"
-msgstr ""
+msgstr "Lokalt innehåll"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:7
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:7
 msgid "My Organization"
-msgstr ""
+msgstr "Min Organisation"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:15
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:15
 msgid "my-organization"
-msgstr ""
+msgstr "min-organisation"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:17
 msgid "Website"
-msgstr ""
+msgstr "Webbplats"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:17
 msgid "http://example.com"
-msgstr ""
+msgstr "http://www.exempel.se"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:19
 msgid "Description"
-msgstr ""
+msgstr "Beskrivning"
 
 #: ckanext/sweden/templates/organization/snippets/organization_form.html:19
 msgid "A little information about my organization..."
-msgstr ""
+msgstr "Lite information om vår organisation..."
 
 #: ckanext/sweden/templates/package/snippets/additional_info.html:6
 msgid "Eurovoc"
-msgstr ""
+msgstr "Eurovoc"
 
 #: ckanext/sweden/theme/templates/footer.html:8
 msgid "About {0}"
-msgstr ""
+msgstr "Om {0}"
 
 #: ckanext/sweden/theme/templates/home/snippets/most_viewed.html:4
 msgid "Most viewed datasets"
-msgstr ""
+msgstr "Mest visade dataset"
 
 #: ckanext/sweden/theme/templates/home/snippets/recently_updated.html:4
 msgid "Recently updated datasets"
-msgstr "test please work"
+msgstr "Nyligen uppdaterade datamängder"
 
 #: ckanext/sweden/theme/templates/home/snippets/search.html:2
 #: ckanext/sweden/theme/templates/home/snippets/search.html:5
 msgid "Search data"
-msgstr ""
+msgstr "Sök data"
 
 #: ckanext/sweden/theme/templates/home/snippets/search.html:10
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 #: ckanext/sweden/theme/templates/home/snippets/search.html:15
 msgid "Popular tags"
-msgstr ""
+msgstr "Populära taggar"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:7
 msgid "Total datasets by week"
-msgstr ""
+msgstr "Totalt dataset per vecka"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
 msgid "All activity"
-msgstr ""
+msgstr "Alla aktivitet"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
 msgid "New datasets"
-msgstr ""
+msgstr "Nya dataset"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:19
 msgid "Dataset activity by week"
-msgstr ""
+msgstr "Dataset - aktivitet per vecka"
 
 #: ckanext/sweden/theme/templates/home/snippets/top_groups.html:4
 msgid "Top groups"
-msgstr ""
+msgstr "Vanligaste grupper"
 
 #: ckanext/sweden/theme/templates/home/snippets/tweets.html:2
 msgid "Recent tweets"
-msgstr ""
+msgstr "Senaste tweets"
 
 #: ckanext/sweden/theme/templates/home/snippets/tweets.html:5
 msgid "Loading recent tweets"
-msgstr ""
-
+msgstr "Laddar senaste tweets"

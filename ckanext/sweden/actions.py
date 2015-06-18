@@ -145,3 +145,90 @@ def _harvest_list_for_org(context, org_id):
     harvest_search = toolkit.get_action('package_search')(context=context,
                                                           data_dict=harvest_dict)
     return harvest_search.get('results', [])
+
+
+# TODO: This overrides the core `user_invite` action to be able to customize
+# the email sent, until #2465 gets merged and this extension targets a CKAN
+# version that uses it. Once this happens, all this can go
+import random
+from ckan import logic
+from ckan import new_authz as authz
+from ckan.lib import mailer
+import ckan.lib.dictization.model_dictize as model_dictize
+from ckan.lib.base import render_jinja2
+
+
+def user_invite(context, data_dict):
+    '''Invite a new user.
+
+    You must be authorized to create group members.
+
+    :param email: the email of the user to be invited to the group
+    :type email: string
+    :param group_id: the id or name of the group
+    :type group_id: string
+    :param role: role of the user in the group. One of ``member``, ``editor``,
+        or ``admin``
+    :type role: string
+
+    :returns: the newly created yser
+    :rtype: dictionary
+    '''
+    toolkit.check_access('user_invite', context, data_dict)
+
+    schema = context.get('schema',
+                         logic.schema.default_user_invite_schema())
+    data, errors = toolkit.navl_validate(data_dict, schema, context)
+    if errors:
+        raise toolkit.ValidationError(errors)
+
+    model = context['model']
+    group = model.Group.get(data['group_id'])
+    if not group:
+        raise toolkit.ObjectNotFound()
+
+    name = logic.action.create._get_random_username_from_email(data['email'])
+    password = str(random.SystemRandom().random())
+    data['name'] = name
+    data['password'] = password
+    data['state'] = model.State.PENDING
+    user_dict = toolkit.get_action('user_create')(context, data)
+    user = model.User.get(user_dict['id'])
+    member_dict = {
+        'username': user.id,
+        'id': data['group_id'],
+        'role': data['role']
+    }
+    toolkit.get_action('group_member_create')(context, member_dict)
+
+    if group.is_organization:
+        group_dict = toolkit.get_action('organization_show')(context,
+            {'id': data['group_id']})
+    else:
+        group_dict = toolkit.get_action('group_show')(context,
+            {'id': data['group_id']})
+
+    mailer.create_reset_key(user)
+
+    # Email body
+    group_type = (toolkit._('organization') if group_dict['is_organization']
+                  else toolkit._('group'))
+    role = data['role']
+    extra_vars = {
+        'reset_link': mailer.get_reset_link(user),
+        'site_title': config.get('ckan.site_title'),
+        'site_url': config.get('ckan.site_url'),
+        'user_name': user.name,
+        'role_name': authz.roles_trans().get(role, toolkit._(role)),
+        'group_type': group_type,
+        'group_title': group_dict.get('title'),
+    }
+
+    # NOTE: This template is translated
+    body = render_jinja2('emails/invite_user.txt', extra_vars)
+    subject = toolkit._('Invite for {site_title}').format(
+        site_title=config.get('ckan.site_title'))
+
+    mailer.mail_user(user, subject, body)
+
+    return model_dictize.user_dictize(user, context)
