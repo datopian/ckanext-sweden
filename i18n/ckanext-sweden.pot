@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-sweden 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-10 11:31+0100\n"
+"POT-Creation-Date: 2015-06-22 10:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+#: ckanext/sweden/actions.py:214
+msgid "organization"
+msgstr ""
+
+#: ckanext/sweden/actions.py:215
+msgid "group"
+msgstr ""
+
+#: ckanext/sweden/actions.py:229
+msgid "Invite for {site_title}"
+msgstr ""
 
 #: ckanext/sweden/controllers.py:15 ckanext/sweden/controllers.py:35
 msgid "Organization not found"
@@ -25,7 +37,7 @@ msgstr ""
 msgid "Eurovoc Categories"
 msgstr ""
 
-#: ckanext/sweden/plugin.py:184
+#: ckanext/sweden/plugin.py:186
 msgid "There already is an organization with this URL: {0}"
 msgstr ""
 
@@ -255,15 +267,16 @@ msgstr ""
 msgid "Uri"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:136
+#. '(num) documents with errors'
+#: ckanext/sweden/dcat/templates/source/job/read.html:137
 msgid "documents with errors"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:147
+#: ckanext/sweden/dcat/templates/source/job/read.html:148
 msgid "Remote content"
 msgstr ""
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:151
+#: ckanext/sweden/dcat/templates/source/job/read.html:152
 msgid "Local content"
 msgstr ""
 
@@ -307,6 +320,24 @@ msgstr ""
 msgid "About {0}"
 msgstr ""
 
+#: ckanext/sweden/theme/templates/emails/invite_user.txt:1
+msgid ""
+"You have been invited to {{ site_title }}.\n"
+"\n"
+"A user has already been created for you with the username {{ user_name }}. "
+"You can change it later.\n"
+"\n"
+"You have been added to the {{ group_type }} {{ group_title }} with the "
+"following role: {{ role_name }}.\n"
+"\n"
+"To accept this invite, please reset your password at:\n"
+"\n"
+"   {{ reset_link }}\n"
+"\n"
+"\n"
+"Have a nice day."
+msgstr ""
+
 #: ckanext/sweden/theme/templates/home/snippets/most_viewed.html:4
 msgid "Most viewed datasets"
 msgstr ""
@@ -329,7 +360,7 @@ msgid "Popular tags"
 msgstr ""
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:7
-msgid "Total datasets by week"
+msgid "Dataset growth"
 msgstr ""
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
@@ -342,6 +373,10 @@ msgstr ""
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:19
 msgid "Dataset activity by week"
+msgstr ""
+
+#: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:32
+msgid "Dataset growth for featured category "
 msgstr ""
 
 #: ckanext/sweden/theme/templates/home/snippets/top_groups.html:4

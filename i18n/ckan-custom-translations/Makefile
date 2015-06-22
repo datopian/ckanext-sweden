@@ -79,7 +79,7 @@ $(AGGREGATE_PO): $(SOURCE_POS)
 
 	@# We need the name of the custom .po for this language
 	@# but we need to do some trickery to get it..
-	msgcat --use-first $(patsubst $(AGGREGATE_PO),$(CUSTOM_PO),$@) $^ -o $@
+	msgcat --use-first $^ $(patsubst $(AGGREGATE_PO),$(CUSTOM_PO),$@) -o $@
 
 
 ##------------------------------------------------------------

@@ -6,13 +6,14 @@
 # Börje Lewin <borjelewin@gmail.com>, 2015
 # Joe Tsoi, 2015
 # Joe Tsoi, 2015
+# Tryggvi Björgvinsson <tryggvib@fsfi.is>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-sweden\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-10 11:31+0100\n"
-"PO-Revision-Date: 2015-06-11 17:54+0000\n"
-"Last-Translator: Börje Lewin <borjelewin@gmail.com>\n"
+"POT-Creation-Date: 2015-06-22 10:25+0000\n"
+"PO-Revision-Date: 2015-06-22 10:32+0000\n"
+"Last-Translator: Tryggvi Björgvinsson <tryggvib@fsfi.is>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/ckanext-sweden/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,6 +21,18 @@ msgstr ""
 "Generated-By: Babel 0.9.6\n"
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ckanext/sweden/actions.py:214
+msgid "organization"
+msgstr "organisation"
+
+#: ckanext/sweden/actions.py:215
+msgid "group"
+msgstr "grupp"
+
+#: ckanext/sweden/actions.py:229
+msgid "Invite for {site_title}"
+msgstr "Inbjudan till {site_title}"
 
 #: ckanext/sweden/controllers.py:15 ckanext/sweden/controllers.py:35
 msgid "Organization not found"
@@ -29,7 +42,7 @@ msgstr "Hittar inte organisationen"
 msgid "Eurovoc Categories"
 msgstr "Eurovoc-kategorier"
 
-#: ckanext/sweden/plugin.py:184
+#: ckanext/sweden/plugin.py:186
 msgid "There already is an organization with this URL: {0}"
 msgstr "Det finns redan en organisation med URL: {0}"
 
@@ -259,15 +272,16 @@ msgstr "Mall"
 msgid "Uri"
 msgstr "URI"
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:136
+#. '(num) documents with errors'
+#: ckanext/sweden/dcat/templates/source/job/read.html:137
 msgid "documents with errors"
 msgstr "dokument med fel"
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:147
+#: ckanext/sweden/dcat/templates/source/job/read.html:148
 msgid "Remote content"
 msgstr "Innehåll på fjärrsidan"
 
-#: ckanext/sweden/dcat/templates/source/job/read.html:151
+#: ckanext/sweden/dcat/templates/source/job/read.html:152
 msgid "Local content"
 msgstr "Lokalt innehåll"
 
@@ -311,6 +325,22 @@ msgstr "Eurovoc"
 msgid "About {0}"
 msgstr "Om {0}"
 
+#: ckanext/sweden/theme/templates/emails/invite_user.txt:1
+msgid ""
+"You have been invited to {{ site_title }}.\n"
+"\n"
+"A user has already been created for you with the username {{ user_name }}. You can change it later.\n"
+"\n"
+"You have been added to the {{ group_type }} {{ group_title }} with the following role: {{ role_name }}.\n"
+"\n"
+"To accept this invite, please reset your password at:\n"
+"\n"
+"   {{ reset_link }}\n"
+"\n"
+"\n"
+"Have a nice day."
+msgstr "Du har blivit inbjuden till {{ site_title }}.\n\nEn användare har redan skapats för dig med användarnamn {{ user_name }}. Du kan ändra det användarnamnet om du vill.\n\nDu har lagts till i: {{ group_type }} {{ group_title }} med följande roll: {{ role_name }}\n\nFör att acceptera detta inbjudan, vänligen återställ ditt lösenord på:\n\n{{ reset_link }}\n\n\nHa en bra dag."
+
 #: ckanext/sweden/theme/templates/home/snippets/most_viewed.html:4
 msgid "Most viewed datasets"
 msgstr "Mest visade dataset"
@@ -333,8 +363,8 @@ msgid "Popular tags"
 msgstr "Populära taggar"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:7
-msgid "Total datasets by week"
-msgstr "Totalt dataset per vecka"
+msgid "Dataset growth"
+msgstr "Ökning av dataset"
 
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:18
 msgid "All activity"
@@ -347,6 +377,10 @@ msgstr "Nya dataset"
 #: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:19
 msgid "Dataset activity by week"
 msgstr "Dataset - aktivitet per vecka"
+
+#: ckanext/sweden/theme/templates/home/snippets/stats_vis.html:32
+msgid "Dataset growth for featured category "
+msgstr "Ökning av dataset i specifik kategori"
 
 #: ckanext/sweden/theme/templates/home/snippets/top_groups.html:4
 msgid "Top groups"
