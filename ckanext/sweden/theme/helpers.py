@@ -2,7 +2,7 @@ import random
 from itertools import groupby
 import datetime
 import calendar
-from sqlalchemy import Table, select, func
+from sqlalchemy import Table, select, func, and_
 
 from ckan.plugins import toolkit
 import ckan.model as model
@@ -26,7 +26,10 @@ def get_new_datasets(pkg_ids=None):
     s = select([package_revision.c.id, func.min(revision.c.timestamp)],
                from_obj=[package_revision.join(revision)])
     if pkg_ids:
-        s = s.where(package_revision.c.id.in_(pkg_ids))
+        s = s.where(and_(package_revision.c.id.in_(pkg_ids),
+                         package_revision.c.type == 'dataset'))
+    else:
+        s = s.where(package_revision.c.type == 'dataset')
     s = s.group_by(package_revision.c.id).\
         order_by(func.min(revision.c.timestamp))
     res = model.Session.execute(s).fetchall()  # [(id, datetime), ...]
@@ -45,6 +48,7 @@ def get_package_revisions():
     s = select([package_revision.c.id, revision.c.timestamp],
                from_obj=[package_revision.join(revision)]).\
         order_by(revision.c.timestamp)
+    s = s.where(package_revision.c.type == 'dataset')
     res = model.Session.execute(s).fetchall()  # [(id, datetime), ...]
     return res
 
