@@ -114,7 +114,7 @@ def create_org(ckan, org_title, org_url, dcat_url=None, admin_email=None,
         _out(('Harvest Source "{0}" already exists, skipping creation' +
              '...').format(org_title_output))
     except ckanapi.NotFound:
-        dcat_url = dcat_url or '{0}/datasets/dcat.rdf'.format(org_url)
+        dcat_url = dcat_url or '{0}/datasets/dcat'.format(org_url)
         params_source = {
             'title': org['title'],
             'name': org['name'],
@@ -190,7 +190,7 @@ be prompt for them.
                         help='Url of the organization to be created')
     parser.add_argument('-d', '--dcat_url',
                         help='Url of the DCAT datasets. Defaults to ' +
-                             '{org_url}/datasets/dcat.rdf')
+                             '{org_url}/datasets/dcat')
     parser.add_argument('-e', '--admin_email',
                         help='Email address of the admin user')
     parser.add_argument('-q', '--quiet',
@@ -255,14 +255,14 @@ be prompt for them.
         if args.org_title and args.org_url:
             org_title = args.org_title
             org_url = args.org_url
-            default_dcat_url = '{0}/datasets/dcat.rdf'.format(
+            default_dcat_url = '{0}/datasets/dcat'.format(
                 org_url.rstrip('/'))
             dcat_url = args.dcat_url or default_dcat_url
             admin_email = args.admin_email
         else:
             org_title = _check_arg(args, 'org_title', 'Organization title')
             org_url = _check_arg(args, 'org_url', 'Organization URL (website)')
-            default_dcat_url = '{0}/datasets/dcat.rdf'.format(
+            default_dcat_url = '{0}/datasets/dcat'.format(
                 org_url.rstrip('/'))
             dcat_url = _check_arg(args, 'org_url', 'DCAT datasets URL',
                                   default_dcat_url)
