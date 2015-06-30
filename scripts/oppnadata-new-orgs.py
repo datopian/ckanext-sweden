@@ -102,7 +102,7 @@ def create_org(ckan, org_title, org_url, dcat_url=None, admin_email=None,
         params_org = {
             'title': org_title,
             'name': org_name,
-            'url': org_url,
+            'extras': [{'key':'url', 'value':org_url}],
         }
         org = ckan.action.organization_create(**params_org)
         org_created = True
