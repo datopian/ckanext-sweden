@@ -110,6 +110,10 @@ def dcat_validation(context, data_dict):
                 try:
                     message = json.loads(error.get('message'))
                 except ValueError:
+                    # If the error can't be parsed it is normal text (not a
+                    # json object) which means its a more fundamental error
+                    # We therefore increment the error count
+                    error_count += 1
                     message = error.get('message', '')
                 else:
                     if message.get('errors') and type(message.get('errors')) is list:
