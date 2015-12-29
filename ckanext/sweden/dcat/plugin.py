@@ -1,5 +1,6 @@
 import json
 import requests
+import rdflib
 
 from pylons import config
 
@@ -10,6 +11,14 @@ from ckanext.sweden.dcat import template_helpers
 
 
 VALIDATION_SERVICE = 'https://validator.dcat-editor.com/service'
+
+# Assume that remote files with this media types are RDF/XML
+rdflib.plugin.register(
+    'application/octet-stream', rdflib.parser.Parser,
+    'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+rdflib.plugin.register(
+    'application/rss+xml', rdflib.parser.Parser,
+    'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 
 
 class SwedenDCATRDFHarvester(p.SingletonPlugin):
